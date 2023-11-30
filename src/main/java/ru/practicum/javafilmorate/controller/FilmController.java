@@ -37,9 +37,10 @@ public class FilmController {
                     film.getReleaseDate());
             throw new InvalidDataExcepion("Дата фильма не должна предшествовать 28.12.1895 г.");
         }
-        film.setID(++ID);
+        film.setID(ID);
         films.put(film.getID(), film);
-        log.info("Фильм {} успешно добавлен", film.getTitle());
+        ID++;
+        log.info("Фильм {} успешно добавлен", film.getName());
         return film;
     }
 
@@ -53,7 +54,7 @@ public class FilmController {
     public Film updateFilm(@Valid @RequestBody Film film) {
         if (!films.containsKey(film.getID())) {
             log.error("При выполнении PUT-запроса переданы данные о фильме, который не зарегистрирован в системе");
-            throw new InvalidDataExcepion(String.format("Данные о фильме {} отсутствуют в системе", film.getTitle()));
+            throw new InvalidDataExcepion(String.format("Данные о фильме {} отсутствуют в системе", film.getName()));
         }
         if (film.getReleaseDate().isBefore(FIRST_PUBLIC_SCREENING_DATE)) {
             log.error("При выполнении PUT-запроса передан фильм с датой {}, которая предшествует 28.12.1895 г.",
@@ -61,7 +62,7 @@ public class FilmController {
             throw new InvalidDataExcepion("Дата фильма не должна предшествовать 28.12.1895 г.");
         }
         films.put(film.getID(), film);
-        log.info("Данные о фильме {} успешно обновлены.", film.getTitle());
+        log.info("Данные о фильме {} успешно обновлены.", film.getName());
         return film;
     }
 

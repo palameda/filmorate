@@ -38,8 +38,9 @@ public class UserController {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        user.setID(++ID);
+        user.setID(ID);
         users.put(user.getID(), user);
+        ID++;
         log.info("Пользователь {} ({}) успешно добавлен", user.getLogin(), user.getName());
         return user;
     }
