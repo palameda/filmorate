@@ -1,4 +1,4 @@
-package ru.practicum.javafilmorate.utils;
+package ru.yandex.practicum.javafilmorate.utils;
 
 /**
  * InvalidDataException - runtime-исключение, которое генерируется в случае обработки некорректных данных

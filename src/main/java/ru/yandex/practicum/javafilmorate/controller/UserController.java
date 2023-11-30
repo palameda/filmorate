@@ -1,9 +1,9 @@
-package ru.practicum.javafilmorate.controller;
+package ru.yandex.practicum.javafilmorate.controller;
 
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
-import ru.practicum.javafilmorate.model.User;
-import ru.practicum.javafilmorate.utils.InvalidDataExcepion;
+import ru.yandex.practicum.javafilmorate.model.User;
+import ru.yandex.practicum.javafilmorate.utils.InvalidDataExcepion;
 
 import java.util.Map;
 import java.util.HashMap;

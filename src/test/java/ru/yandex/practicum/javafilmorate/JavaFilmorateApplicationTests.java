@@ -1,4 +1,4 @@
-package ru.practicum.javafilmorate;
+package ru.yandex.practicum.javafilmorate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

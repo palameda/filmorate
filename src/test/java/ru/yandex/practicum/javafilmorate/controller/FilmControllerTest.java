@@ -1,9 +1,9 @@
-package ru.practicum.javafilmorate.controller;
+package ru.yandex.practicum.javafilmorate.controller;
 
 import org.junit.jupiter.api.*;
 
-import ru.practicum.javafilmorate.model.Film;
-import ru.practicum.javafilmorate.utils.InvalidDataExcepion;
+import ru.yandex.practicum.javafilmorate.model.Film;
+import ru.yandex.practicum.javafilmorate.utils.InvalidDataExcepion;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

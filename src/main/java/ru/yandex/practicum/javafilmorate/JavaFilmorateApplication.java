@@ -1,4 +1,4 @@
-package ru.practicum.javafilmorate;
+package ru.yandex.practicum.javafilmorate;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
