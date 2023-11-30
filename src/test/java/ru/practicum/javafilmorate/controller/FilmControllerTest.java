@@ -21,19 +21,19 @@ class FilmControllerTest {
     private static Validator validator;
 
     @BeforeAll
-    static void beforeAll() {
+    public static void beforeAll() {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             validator = factory.getValidator();
         }
     }
 
     @BeforeEach
-    void initializeController() {
+    public void initializeController() {
         controller = new FilmController();
     }
 
     @Test
-    void testFilmCreatedSuccessfully() {
+    public void testFilmCreatedSuccessfully() {
         int initialID = 1;
         Film film = controller.createFilm(new Film("Once Upon a Time in America",
                 "A former Prohibition-era Jewish gangster returns " +
@@ -43,12 +43,12 @@ class FilmControllerTest {
 
         List<Film> films = controller.findAll();
 
-        Assertions.assertEquals(initialID, film.getID()); // + проверка метода findAll при GET-запросе
-        Assertions.assertEquals(film, films.get(0));
+        Assertions.assertEquals(initialID, film.getID());
+        Assertions.assertEquals(film, films.get(0)); // + проверка метода findAll при GET-запросе
     }
 
     @Test
-    void testAttemptToCreateFilmWithWrongTitle() {
+    public void testAttemptToCreateFilmWithWrongTitle() {
         // 1 случай - пустая строка
         Set<ConstraintViolation<Film>> epmtyViolation = validator.validate(
                 new Film("", "A former Prohibition-era Jewish gangster returns " +
