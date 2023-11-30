@@ -55,7 +55,7 @@ public class UserController {
     public User updateUser(@Valid @RequestBody User user) {
         if (!users.containsKey(user.getID())) {
             log.error("При выполнении PUT-запроса передан пользователь, который не зарегистрирован в системе");
-            throw new InvalidDataExcepion(String.format("Пользователь {} не зарегистрирован в системе", user.getLogin()));
+            throw new InvalidDataExcepion("Пользователь не зарегистрирован в системе");
         }
         if (user.getLogin().contains(" ")) {
             log.error("При выполнении PUT-запроса передан login пользователя, содержащий пробел(ы)");

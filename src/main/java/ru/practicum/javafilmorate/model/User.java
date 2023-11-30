@@ -1,6 +1,7 @@
 package ru.practicum.javafilmorate.model;
 
 import lombok.Data;
+import lombok.NonNull;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -29,12 +30,13 @@ public class User {
     @Email
     private String email;
     @NotBlank
+    @NonNull
     private String login;
     private String name;
     @Past
     private final LocalDate birthday;
 
-    User(String email, String login, String name, LocalDate birthday) {
+    public User(String email, String login, String name, LocalDate birthday) {
         this.email = email;
         this.login = login;
         this.name = name;
