@@ -99,6 +99,7 @@ class UserControllerTest {
         List<User> users = controller.findAll();
         Assertions.assertEquals(changedUser, users.get(0));
     }
+
     @Test
     public void testAttemptToUpdateUserWithIncorrectID() {
         User user = new User("username@company.com",
@@ -115,6 +116,7 @@ class UserControllerTest {
         );
         Assertions.assertEquals("Пользователь не зарегистрирован в системе", exception.getMessage());
     }
+
     @Test
     public void testAttemptToUpdateUserWithLoginWithSpace() {
         User user = new User("username@company.com",
