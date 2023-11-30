@@ -7,10 +7,12 @@
 *.zip
 *.tar.gz
 *.rar
+mvnw
+mvnw.cmd
 hs_err_pid*
 out/
 target/
-!.mvn/wrapper/maven-wrapper.jar
+.mvn/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -44,3 +46,5 @@ build/
 
 *.db
 db/*
+mvnw
+mvnw.cmd
