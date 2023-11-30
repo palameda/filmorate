@@ -54,7 +54,7 @@ public class FilmController {
     public Film updateFilm(@Valid @RequestBody Film film) {
         if (!films.containsKey(film.getID())) {
             log.error("При выполнении PUT-запроса переданы данные о фильме, который не зарегистрирован в системе");
-            throw new InvalidDataExcepion(String.format("Данные о фильме {} отсутствуют в системе", film.getName()));
+            throw new InvalidDataExcepion("Данные о фильме отсутствуют в системе");
         }
         if (film.getReleaseDate().isBefore(FIRST_PUBLIC_SCREENING_DATE)) {
             log.error("При выполнении PUT-запроса передан фильм с датой {}, которая предшествует 28.12.1895 г.",
