@@ -43,7 +43,7 @@ class FilmControllerTest {
 
         List<Film> films = controller.findAll();
 
-        Assertions.assertEquals(initialID, film.getID());
+        Assertions.assertEquals(initialID, film.getId());
         Assertions.assertEquals(film, films.get(0)); // + проверка метода findAll при GET-запросе
     }
 
@@ -144,7 +144,7 @@ class FilmControllerTest {
                 "one, everyday life; the other, what lies behind it. To find out if his reality is a construct, " +
                 "Mr. Anderson will have to choose to follow the white rabbit once more",
                 LocalDate.of(2021, 12, 18), 148);
-        matrixRessurection.setID(matrix.getID());
+        matrixRessurection.setId(matrix.getId());
         controller.updateFilm(matrixRessurection);
 
         List<Film> films = controller.findAll();

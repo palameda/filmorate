@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private int ID = 1;
+    private int id = 1;
     private static final LocalDate FIRST_PUBLIC_SCREENING_DATE = LocalDate.of(1895, 12, 28);
     private final Map<Integer, Film> films = new HashMap<>();
 
@@ -37,9 +37,9 @@ public class FilmController {
                     film.getReleaseDate());
             throw new InvalidDataExcepion("Дата фильма не должна предшествовать 28.12.1895 г.");
         }
-        film.setID(ID);
-        films.put(film.getID(), film);
-        ID++;
+        film.setId(id);
+        films.put(film.getId(), film);
+        id++;
         log.info("Фильм {} успешно добавлен", film.getName());
         return film;
     }
@@ -52,7 +52,7 @@ public class FilmController {
      */
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        if (!films.containsKey(film.getID())) {
+        if (!films.containsKey(film.getId())) {
             log.error("При выполнении PUT-запроса переданы данные о фильме, который не зарегистрирован в системе");
             throw new InvalidDataExcepion("Данные о фильме отсутствуют в системе");
         }
@@ -61,7 +61,7 @@ public class FilmController {
                     film.getReleaseDate());
             throw new InvalidDataExcepion("Дата фильма не должна предшествовать 28.12.1895 г.");
         }
-        films.put(film.getID(), film);
+        films.put(film.getId(), film);
         log.info("Данные о фильме {} успешно обновлены.", film.getName());
         return film;
     }

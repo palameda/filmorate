@@ -26,7 +26,7 @@ import java.time.LocalDate;
  */
 @Data
 public class User {
-    private int ID;
+    private int id;
     @Email
     private String email;
     @NotBlank

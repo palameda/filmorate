@@ -20,7 +20,7 @@ import java.util.ArrayList;
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    private int ID = 1;
+    private int id = 1;
     private final Map<Integer, User> users = new HashMap<>();
 
     /**
@@ -38,9 +38,9 @@ public class UserController {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        user.setID(ID);
-        users.put(user.getID(), user);
-        ID++;
+        user.setId(id);
+        users.put(user.getId(), user);
+        id++;
         log.info("Пользователь {} ({}) успешно добавлен", user.getLogin(), user.getName());
         return user;
     }
@@ -53,7 +53,7 @@ public class UserController {
      */
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        if (!users.containsKey(user.getID())) {
+        if (!users.containsKey(user.getId())) {
             log.error("При выполнении PUT-запроса передан пользователь, который не зарегистрирован в системе");
             throw new InvalidDataExcepion("Пользователь не зарегистрирован в системе");
         }
@@ -64,7 +64,7 @@ public class UserController {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        users.put(user.getID(), user);
+        users.put(user.getId(), user);
         log.info("Данные пользователя {} ({}) успешно обновлены", user.getLogin(), user.getName());
         return user;
     }

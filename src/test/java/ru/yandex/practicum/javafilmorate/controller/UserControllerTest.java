@@ -31,13 +31,13 @@ class UserControllerTest {
 
     @Test
     public void testUserCreatedSuccessfully() {
-        int initialID = 1;
+        int initialId = 1;
         User user = controller.createUser(new User("username@company.com",
                 "blacksmith", "John Smith", LocalDate.of(1970, 1, 1)));
 
         List<User> users = controller.findAll();
 
-        Assertions.assertEquals(initialID, user.getID());
+        Assertions.assertEquals(initialId, user.getId());
         Assertions.assertEquals(user, users.get(0)); // + проверка метода findAll при GET-запросе
     }
 
@@ -93,7 +93,7 @@ class UserControllerTest {
 
         User changedUser = new User("username@organization.com",
                 "blacksmith", "John Smith", LocalDate.of(1970, 1, 1));
-        changedUser.setID(user.getID());
+        changedUser.setId(user.getId());
         controller.updateUser(changedUser);
 
         List<User> users = controller.findAll();
@@ -107,7 +107,7 @@ class UserControllerTest {
 
         User changedUser = new User("username@company.com",
                 "blacksmith", "John Smith", LocalDate.of(1970, 1, 1));
-        changedUser.setID(0);
+        changedUser.setId(0);
 
         InvalidDataExcepion exception = Assertions.assertThrows(
                 InvalidDataExcepion.class,
@@ -123,7 +123,7 @@ class UserControllerTest {
 
         User changedUser = new User("username@company.com",
                 "new login", "John Smith", LocalDate.of(1970, 1, 1));
-        changedUser.setID(user.getID());
+        changedUser.setId(user.getId());
 
         InvalidDataExcepion exception = Assertions.assertThrows(
                 InvalidDataExcepion.class,
