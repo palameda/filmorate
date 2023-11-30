@@ -1,7 +1,6 @@
 package ru.yandex.practicum.javafilmorate.model;
 
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -30,7 +29,6 @@ public class User {
     @Email
     private String email;
     @NotBlank
-    @NonNull
     private String login;
     private String name;
     @Past
