@@ -31,6 +31,7 @@ class FilmControllerTest {
     }
 
     @Test
+    @DisplayName("Создание фильма с корректными данными")
     public void testFilmCreatedSuccessfully() {
         int initialID = 1;
         Film film = controller.createFilm(new Film("Once Upon a Time in America",
@@ -46,6 +47,7 @@ class FilmControllerTest {
     }
 
     @Test
+    @DisplayName("Создание фильма с некорректным названием (пустая строка/пробелы/null)")
     public void testAttemptToCreateFilmWithWrongTitle() {
         // 1 случай - пустая строка
         Set<ConstraintViolation<Film>> epmtyViolation = validator.validate(
@@ -71,25 +73,17 @@ class FilmControllerTest {
     }
 
     @Test
+    @DisplayName("Создание фильма с описанием, которое превышает ограничение в 200 символов")
     public void testAttemptToCreateFilmWithDescriptionLengthMoreThan200Symbols() {
+        String description = "A".repeat(201);
         Set<ConstraintViolation<Film>> descriptionViolation = validator.validate(
-                new Film("Once Upon a Time in America",
-                        "Once Upon a Time in America (Italian: C'era una volta in America) " +
-                                "is a 1984 epic crime film co-written and directed by Italian filmmaker Sergio Leone, " +
-                                "and starring Robert De Niro and James Woods. The film is an Italian–American venture " +
-                                "produced by The Ladd Company, Embassy International Pictures, " +
-                                "PSO Enterprises and Rafran Cinematografica, and distributed by Warner Bros. " +
-                                "Based on Harry Grey's novel The Hoods, it chronicles the lives of best friends " +
-                                "David \"Noodles\" Aaronson and Maximilian \"Max\" Bercovicz " +
-                                "as they lead a group of Jewish ghetto youths who rise to prominence " +
-                                "as Jewish gangsters in New York City's world of organized crime. " +
-                                "The film explores themes of childhood friendships, love, lust, greed, betrayal, " +
-                                "loss, broken relationships, together with the rise of mobsters in American society.",
+                new Film("Once Upon a Time in America", description,
                         LocalDate.of(1984, 6, 1), 229));
         Assertions.assertFalse(descriptionViolation.isEmpty());
     }
 
     @Test
+    @DisplayName("Генерация исключения при создании фильма с датой, которая предшествует дате первого киносеанса")
     public void testAttemptToCreateFilmWithWrongDate() {
         InvalidDataExcepion exception = Assertions.assertThrows(
                 InvalidDataExcepion.class,
@@ -102,6 +96,7 @@ class FilmControllerTest {
     }
 
     @Test
+    @DisplayName("Создание фильма с неположительным значением длительности")
     public void testAttemptToCreateFilmWithNonPositiveDuration() {
         // 1 случай - продолжительность отрицательная
         Set<ConstraintViolation<Film>> negativeViolation = validator.validate(new Film("Matrix",
@@ -118,7 +113,8 @@ class FilmControllerTest {
     }
 
     @Test
-    public void testAttemptToUpdateFilmWithNullID() {
+    @DisplayName("Генерация исключения при обновлении фильма с id = null")
+    public void testAttemptToUpdateFilmWithNullId() {
         InvalidDataExcepion exception = Assertions.assertThrows(
                 InvalidDataExcepion.class,
                 () -> controller.updateFilm(new Film("Matrix", "When a beautiful stranger " +
@@ -130,6 +126,7 @@ class FilmControllerTest {
     }
 
     @Test
+    @DisplayName("Корректное обновление фильма")
     public void testAttemptToUpdateRegisteredFilm() {
         Film matrix = new Film("Matrix", "When a beautiful stranger " +
                 "leads computer hacker Neo to a forbidding underworld, " +

@@ -30,6 +30,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Создание пользователя с корректными данными")
     public void testUserCreatedSuccessfully() {
         int initialId = 1;
         User user = controller.createUser(new User("username@company.com",
@@ -42,6 +43,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Создание пользователя с некорректным email")
     public void testAttemptToCreateUserWithInvalidEmail() {
         Set<ConstraintViolation<User>> violation = validator.validate(new User("username.company.com@",
                         "blacksmith", "", LocalDate.of(1970, 1, 1)));
@@ -49,6 +51,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Создание пользователя с некорректным логином (пустая строка/пробел/null")
     public void testAttemptToCreateUserWithIncorrectLogin() {
         // 1 случай - пустая строка
         Set<ConstraintViolation<User>> blankViolation = validator.validate(new User("username@company.com",
@@ -65,6 +68,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Создание пользователя без имени")
     public void testAttemptToCreateUserWithBlankName() {
         User user = controller.createUser(new User("username@companyname.com",
                 "blacksmith", "", LocalDate.of(1970, 1, 1)));
@@ -72,6 +76,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Создание пользователя с именем = null")
     public void testAttemptToCreateUserWithNullName() {
         User user = controller.createUser(new User("username@companyname.com",
                 "blacksmith", null, LocalDate.of(1970, 1, 1)));
@@ -79,6 +84,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Создание пользователя с некорректной датой рождения (future date)")
     public void testAttemptToCreateUserWithIncorrectBirthDate() {
         Set<ConstraintViolation<User>> futureDateViolation = validator.validate(new User("username@company.com",
                 "blacksmith", "John Smith", LocalDate.of(2070, 1, 1)));
@@ -86,6 +92,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Корректное обновление пользователя")
     public void testAttemptToUpdateRegisteredUser() {
         User user = new User("username@company.com",
                 "blacksmith", "John Smith", LocalDate.of(1970, 1, 1));
@@ -101,6 +108,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Обновление пользователя с некорректным id")
     public void testAttemptToUpdateUserWithIncorrectID() {
         User user = new User("username@company.com",
                 "blacksmith", "John Smith", LocalDate.of(1970, 1, 1));
@@ -118,6 +126,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Генерация исключения при обновлении пользователя с логином, содержащим пробел")
     public void testAttemptToUpdateUserWithLoginWithSpace() {
         User user = new User("username@company.com",
                 "blacksmith", "John Smith", LocalDate.of(1970, 1, 1));
