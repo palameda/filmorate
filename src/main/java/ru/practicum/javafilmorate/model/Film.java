@@ -30,7 +30,7 @@ import java.time.LocalDate;
 public class Film {
     private int ID;
     @NotBlank
-    private final String title;
+    private final String name;
     @Size(max = 200)
     private final String description;
     private final LocalDate releaseDate;
