@@ -8,6 +8,7 @@ import ru.yandex.practicum.javafilmorate.storage.UserStorage;
 import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -53,9 +54,9 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User getUserById(int id) {
-        checkUser(id);
+        User user = checkUser(id);
         log.info("Пользователь c id {} зарегестрирован в системе", id);
-        return userStorage.getAllUsers().get(id);
+        return user;
     }
 
     @Override
@@ -86,7 +87,12 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public List<User> getUserFriends(int selfId) {
-        return null;
+        User user = checkUser(selfId);
+        List<User> friends = user.getFriends().stream()
+                .map(friendId -> userStorage.getAllUsers().get(friendId))
+                .collect(Collectors.toList());
+        log.info("У пользователя {} {} друзей", user.getName(), friends.size());
+        return friends;
     }
 
     @Override
