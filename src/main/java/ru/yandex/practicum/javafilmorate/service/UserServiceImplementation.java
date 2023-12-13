@@ -59,13 +59,14 @@ public class UserServiceImplementation implements UserService {
             log.error("Пользователь не зарегистрирован в системе");
             throw new InvalidDataException("Пользователь не зарегистрирован в системе");
         }
-        log.info("Пользователь c {} зарегестрирован в системе", id);
+        log.info("Пользователь c id {} зарегестрирован в системе", id);
         return userStorage.getAllUsers().get(id);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+        log.info("Зарегестрированные в системе пользователи возвращены");
+        return List.copyOf(userStorage.getAllUsers().values());
     }
 
     @Override
