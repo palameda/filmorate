@@ -55,7 +55,12 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User getUserById(int id) {
-        return null;
+        if (!userStorage.getAllUsers().containsKey(id)) {
+            log.error("Пользователь не зарегистрирован в системе");
+            throw new InvalidDataException("Пользователь не зарегистрирован в системе");
+        }
+        log.info("Пользователь c {} зарегестрирован в системе", id);
+        return userStorage.getAllUsers().get(id);
     }
 
     @Override
