@@ -2,7 +2,10 @@ package ru.yandex.practicum.javafilmorate.controller;
 
 import org.junit.jupiter.api.*;
 import ru.yandex.practicum.javafilmorate.model.User;
-import ru.yandex.practicum.javafilmorate.utils.InvalidDataExcepion;
+import ru.yandex.practicum.javafilmorate.service.UserServiceImplementation;
+import ru.yandex.practicum.javafilmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
+import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -26,7 +29,7 @@ class UserControllerTest {
 
     @BeforeEach
     public void initializeController() {
-        controller = new UserController();
+        controller = new UserController(new UserServiceImplementation(new InMemoryUserStorage()));
     }
 
     @Test
@@ -118,8 +121,8 @@ class UserControllerTest {
                 "blacksmith", "John Smith", LocalDate.of(1970, 1, 1));
         changedUser.setId(0);
 
-        InvalidDataExcepion exception = Assertions.assertThrows(
-                InvalidDataExcepion.class,
+        UnregisteredDataException exception = Assertions.assertThrows(
+                UnregisteredDataException.class,
                 () -> controller.updateUser(changedUser)
         );
         Assertions.assertEquals("Пользователь не зарегистрирован в системе", exception.getMessage());
@@ -136,8 +139,8 @@ class UserControllerTest {
                 "new login", "John Smith", LocalDate.of(1970, 1, 1));
         changedUser.setId(user.getId());
 
-        InvalidDataExcepion exception = Assertions.assertThrows(
-                InvalidDataExcepion.class,
+        InvalidDataException exception = Assertions.assertThrows(
+                InvalidDataException.class,
                 () -> controller.updateUser(changedUser)
         );
         Assertions.assertEquals("login пользователя не должен содержать пробелы", exception.getMessage());
