@@ -60,12 +60,19 @@ public class FilmServiceImplementation implements FilmService {
 
     @Override
     public void addLike(int id, int userId) {
-
+        Film film = checkFilmRegistration(id);
+        film.getLikes().add(userId);
+        log.info("Фильм {} понравился пользователю с id {}", film.getName(), userId);
     }
 
     @Override
     public void deleteLike(int id, int userId) {
-
+        Film film = checkFilmRegistration(id);
+        if (!film.getLikes().contains(userId)) {
+            throw new UnregisteredDataException("Пользователь не найден в системе");
+        }
+        film.getLikes().remove(userId);
+        log.info("Пользователю с id {} больше не нравиться фильм {}", userId, film.getName());
     }
 
     @Override
