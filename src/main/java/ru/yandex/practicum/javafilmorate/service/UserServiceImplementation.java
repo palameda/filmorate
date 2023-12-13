@@ -49,7 +49,8 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public void deleteUser(User user) {
-
+        log.info("Пользователь {} ({}) успешно удалён", user.getLogin(), user.getName());
+        userStorage.deleteUser(user);
     }
 
     @Override
