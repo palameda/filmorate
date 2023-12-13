@@ -31,7 +31,20 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User updateUser(User user) {
-
+        if (!userStorage.getAllUsers().containsKey(user.getId())) {
+            log.error("Пользователь не зарегистрирован в системе");
+            throw new InvalidDataException("Пользователь не зарегистрирован в системе");
+        }
+        if (user.getLogin().contains(" ")) {
+            log.error("При обновлении пользователя передан login, содержащий пробел(ы)");
+            throw new InvalidDataException("login пользователя не должен содержать пробелы");
+        }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+        userStorage.updateUser(user);
+        log.info("Данные пользователя {} ({}) успешно обновлены", user.getLogin(), user.getName());
+        return user;
     }
 
     @Override
