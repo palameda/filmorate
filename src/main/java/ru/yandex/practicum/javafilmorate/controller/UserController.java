@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.utils.InvalidDataExcepion;
+import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class UserController {
     public User createUser(@Valid @RequestBody User user) {
         if (user.getLogin().contains(" ")) {
             log.error("При выполнении POST-запроса передан login пользователя, содержащий пробел(ы)");
-            throw new InvalidDataExcepion("login пользователя не должен содержать пробелы");
+            throw new InvalidDataException("login пользователя не должен содержать пробелы");
         }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
@@ -55,11 +56,11 @@ public class UserController {
     public User updateUser(@Valid @RequestBody User user) {
         if (!users.containsKey(user.getId())) {
             log.error("При выполнении PUT-запроса передан пользователь, который не зарегистрирован в системе");
-            throw new InvalidDataExcepion("Пользователь не зарегистрирован в системе");
+            throw new InvalidDataException("Пользователь не зарегистрирован в системе");
         }
         if (user.getLogin().contains(" ")) {
             log.error("При выполнении PUT-запроса передан login пользователя, содержащий пробел(ы)");
-            throw new InvalidDataExcepion("login пользователя не должен содержать пробелы");
+            throw new InvalidDataException("login пользователя не должен содержать пробелы");
         }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
