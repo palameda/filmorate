@@ -1,11 +1,9 @@
 package ru.yandex.practicum.javafilmorate.service;
 
-import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.User;
 
 import java.util.List;
 
-@Service
 public interface UserService {
     User addUser(User user);
 

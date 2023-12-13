@@ -1,11 +1,9 @@
 package ru.yandex.practicum.javafilmorate.service;
 
-import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.Film;
 
 import java.util.List;
 
-@Service
 public interface FilmService {
     Film addFilm(Film film);
 
