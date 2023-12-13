@@ -66,12 +66,22 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public void addFriend(int selfId, int friendId) {
-
+        User self = checkUser(selfId);
+        User friend = checkUser(friendId);
+        self.getFriends().add(friendId);
+        friend.getFriends().add(selfId);
+        log.info("Пользователи {} и {} теперь друзья", userStorage.getAllUsers().get(selfId),
+                userStorage.getAllUsers().get(friendId));
     }
 
     @Override
     public void deleteFriend(int selfId, int friendId) {
-
+        User self = checkUser(selfId);
+        User friend = checkUser(friendId);
+        self.getFriends().remove(friendId);
+        friend.getFriends().remove(selfId);
+        log.info("Пользователи {} и {} больше не друзья", userStorage.getAllUsers().get(selfId),
+                userStorage.getAllUsers().get(friendId));
     }
 
     @Override
@@ -84,10 +94,11 @@ public class UserServiceImplementation implements UserService {
         return null;
     }
 
-    private void checkUser(int id) {
+    private User checkUser(int id) {
         if (!userStorage.getAllUsers().containsKey(id)) {
             log.error("Пользователь не зарегистрирован в системе");
             throw new InvalidDataException("Пользователь не зарегистрирован в системе");
         }
+        return userStorage.getAllUsers().get(id);
     }
 }
