@@ -31,10 +31,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User updateUser(User user) {
-        if (!userStorage.getAllUsers().containsKey(user.getId())) {
-            log.error("Пользователь не зарегистрирован в системе");
-            throw new InvalidDataException("Пользователь не зарегистрирован в системе");
-        }
+        checkUser(user.getId());
         if (user.getLogin().contains(" ")) {
             log.error("При обновлении пользователя передан login, содержащий пробел(ы)");
             throw new InvalidDataException("login пользователя не должен содержать пробелы");
@@ -49,16 +46,14 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public void deleteUser(User user) {
+        checkUser(user.getId());
         log.info("Пользователь {} ({}) успешно удалён", user.getLogin(), user.getName());
         userStorage.deleteUser(user);
     }
 
     @Override
     public User getUserById(int id) {
-        if (!userStorage.getAllUsers().containsKey(id)) {
-            log.error("Пользователь не зарегистрирован в системе");
-            throw new InvalidDataException("Пользователь не зарегистрирован в системе");
-        }
+        checkUser(id);
         log.info("Пользователь c id {} зарегестрирован в системе", id);
         return userStorage.getAllUsers().get(id);
     }
@@ -87,5 +82,12 @@ public class UserServiceImplementation implements UserService {
     @Override
     public List<User> getCommonFriends(int firstId, int secondId) {
         return null;
+    }
+
+    private void checkUser(int id) {
+        if (!userStorage.getAllUsers().containsKey(id)) {
+            log.error("Пользователь не зарегистрирован в системе");
+            throw new InvalidDataException("Пользователь не зарегистрирован в системе");
+        }
     }
 }
