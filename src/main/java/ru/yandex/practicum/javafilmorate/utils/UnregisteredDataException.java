@@ -1,4 +1,7 @@
 package ru.yandex.practicum.javafilmorate.utils;
 
-public class InstanceDoesNotExist {
+public class UnregisteredDataException extends RuntimeException {
+    public UnregisteredDataException(String message) {
+        super(message);
+    }
 }
