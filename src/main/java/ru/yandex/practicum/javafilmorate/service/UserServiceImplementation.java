@@ -97,7 +97,15 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public List<User> getCommonFriends(int firstId, int secondId) {
-        return null;
+        User firstUser = checkUser(firstId);
+        User secondUser = checkUser(secondId);
+        List<User> commonFriends = firstUser.getFriends().stream()
+                .filter(friendId -> secondUser.getFriends().contains(friendId))
+                .map(filteredId -> userStorage.getAllUsers().get(filteredId))
+                .collect(Collectors.toList());
+        log.info("У пользователя {} и пользователя {} {} общих друзей", firstUser.getName(), secondUser.getName(),
+                commonFriends.size());
+        return commonFriends;
     }
 
     private User checkUser(int id) {
