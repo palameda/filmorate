@@ -35,7 +35,7 @@ public class User {
     private String name;
     @Past
     private final LocalDate birthday;
-    private final Set<Long> friends = new HashSet<>();
+    private final Set<Integer> friends = new HashSet<>();
 
     public User(String email, String login, String name, LocalDate birthday) {
         this.email = email;
