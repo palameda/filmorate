@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.storage.UserStorage;
 import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
+import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,14 +56,15 @@ public class UserServiceImplementation implements UserService {
     @Override
     public User getUserById(int id) {
         User user = checkUser(id);
-        log.info("Пользователь c id {} зарегестрирован в системе", id);
+        log.info("Пользователь c id {} зарегестрирован в системе как {}", id, user.getLogin());
         return user;
     }
 
     @Override
     public List<User> getAllUsers() {
-        log.info("Зарегестрированные в системе пользователи возвращены");
-        return List.copyOf(userStorage.getAllUsers().values());
+        List<User> users = List.copyOf(userStorage.getAllUsers().values());
+        log.info("В системе зарегистрировано {} пользователей", users.size());
+        return users;
     }
 
     @Override
@@ -111,7 +113,7 @@ public class UserServiceImplementation implements UserService {
     private User checkUser(int id) {
         if (!userStorage.getAllUsers().containsKey(id)) {
             log.error("Пользователь не зарегистрирован в системе");
-            throw new InvalidDataException("Пользователь не зарегистрирован в системе");
+            throw new UnregisteredDataException("Пользователь не зарегистрирован в системе");
         }
         return userStorage.getAllUsers().get(id);
     }
