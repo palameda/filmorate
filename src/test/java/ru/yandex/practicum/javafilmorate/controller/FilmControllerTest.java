@@ -3,7 +3,10 @@ package ru.yandex.practicum.javafilmorate.controller;
 import org.junit.jupiter.api.*;
 
 import ru.yandex.practicum.javafilmorate.model.Film;
-import ru.yandex.practicum.javafilmorate.utils.InvalidDataExcepion;
+import ru.yandex.practicum.javafilmorate.service.FilmServiceImplementation;
+import ru.yandex.practicum.javafilmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
+import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -27,7 +30,7 @@ class FilmControllerTest {
 
     @BeforeEach
     public void initializeController() {
-        controller = new FilmController();
+        controller =  new FilmController(new FilmServiceImplementation(new InMemoryFilmStorage()));
     }
 
     @Test
@@ -85,8 +88,8 @@ class FilmControllerTest {
     @Test
     @DisplayName("Генерация исключения при создании фильма с датой, которая предшествует дате первого киносеанса")
     public void testAttemptToCreateFilmWithWrongDate() {
-        InvalidDataExcepion exception = Assertions.assertThrows(
-                InvalidDataExcepion.class,
+        InvalidDataException exception = Assertions.assertThrows(
+                InvalidDataException.class,
                 () -> controller.createFilm(new Film("Matrix", "When a beautiful stranger " +
                         "leads computer hacker Neo to a forbidding underworld, " +
                         "he discovers the shocking truth--the life he knows " +
@@ -115,8 +118,8 @@ class FilmControllerTest {
     @Test
     @DisplayName("Генерация исключения при обновлении фильма с id = null")
     public void testAttemptToUpdateFilmWithNullId() {
-        InvalidDataExcepion exception = Assertions.assertThrows(
-                InvalidDataExcepion.class,
+        UnregisteredDataException exception = Assertions.assertThrows(
+                UnregisteredDataException.class,
                 () -> controller.updateFilm(new Film("Matrix", "When a beautiful stranger " +
                         "leads computer hacker Neo to a forbidding underworld, " +
                         "he discovers the shocking truth--the life he knows " +

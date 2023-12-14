@@ -1,81 +1,56 @@
 package ru.yandex.practicum.javafilmorate.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.javafilmorate.model.User;
-import ru.yandex.practicum.javafilmorate.utils.InvalidDataExcepion;
+import ru.yandex.practicum.javafilmorate.service.UserService;
 
-import java.util.Map;
-import java.util.HashMap;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.ArrayList;
-
-/**
- * Класс UserController работает с endpoint'ом "/users" и обслуживает пользователей сервиса Filmorate.
- * Выполняет обработку POST, PUT и GET -запросов.
- */
 
 @RestController
 @RequestMapping("/users")
-@Slf4j
+@AllArgsConstructor
 public class UserController {
-    private int id = 1;
-    private final Map<Integer, User> users = new HashMap<>();
+    private final UserService userService;
 
-    /**
-     * Метод createUser обрабатывает POST-запрос и добавляет пользователя в систему.<br>
-     * В случае некорректных данных генерируется исключение InvalidDataException.
-     * @param user
-     * @return user
-     */
-    @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
-        if (user.getLogin().contains(" ")) {
-            log.error("При выполнении POST-запроса передан login пользователя, содержащий пробел(ы)");
-            throw new InvalidDataExcepion("login пользователя не должен содержать пробелы");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        user.setId(id);
-        users.put(user.getId(), user);
-        id++;
-        log.info("Пользователь {} ({}) успешно добавлен", user.getLogin(), user.getName());
-        return user;
-    }
-
-    /**
-     * Метод updateUser обрабатывает PUT-запрос и обновляет данные пользователя в системе.<br>
-     * В случае передачи некорректных данных генерируется исключение InvalidDataException.
-     * @param user
-     * @return user
-     */
-    @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
-        if (!users.containsKey(user.getId())) {
-            log.error("При выполнении PUT-запроса передан пользователь, который не зарегистрирован в системе");
-            throw new InvalidDataExcepion("Пользователь не зарегистрирован в системе");
-        }
-        if (user.getLogin().contains(" ")) {
-            log.error("При выполнении PUT-запроса передан login пользователя, содержащий пробел(ы)");
-            throw new InvalidDataExcepion("login пользователя не должен содержать пробелы");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        users.put(user.getId(), user);
-        log.info("Данные пользователя {} ({}) успешно обновлены", user.getLogin(), user.getName());
-        return user;
-    }
-
-    /**
-     * Метод findAll обрабатывает GET-запрос и возвращает список пользователей, зарегистрированных в системе
-     * @return ArrayList<>(users)
-     */
     @GetMapping
     public List<User> findAll() {
-        log.info("При выполнении GET-запроса получено пользователей: {}", users.size());
-        return new ArrayList<>(users.values());
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable int id) {
+        return userService.getUserById(id);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> findAllFriends(@PathVariable int id) {
+        return userService.getUserFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> findCommonFriends(@PathVariable int id, @PathVariable int otherId) {
+        return userService.getCommonFriends(id, otherId);
+    }
+
+    @PostMapping
+    public User createUser(@Valid @RequestBody User user) {
+        return userService.addUser(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
+        userService.addFriend(id, friendId);
+    }
+
+    @PutMapping
+    public User updateUser(@Valid @RequestBody User user) {
+        return userService.updateUser(user);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
+        userService.deleteFriend(id, friendId);
     }
 }
