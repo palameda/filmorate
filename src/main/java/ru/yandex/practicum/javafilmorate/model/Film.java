@@ -12,12 +12,12 @@ import java.util.Set;
 @Data
 public class Film {
     private int id;
-    @NotBlank
+    @NotBlank(message = "Название фильма не может быть пустым")
     private final String name;
-    @Size(max = 200)
+    @Size(max = 200, message = "Размер описания не должен превышать 200 символов")
     private final String description;
     private final LocalDate releaseDate;
-    @Positive
+    @Positive(message = "Продолжительнось фильма должна быть больше 0")
     private final int duration;
     private final Set<Integer> likes = new HashSet<>();
 }

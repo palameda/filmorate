@@ -12,12 +12,12 @@ import java.util.Set;
 @Data
 public class User {
     private int id;
-    @Email
+    @Email(message = "Передан некорректный e-mail адрес")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Поле login не должно быть пустым")
     private String login;
     private String name;
-    @Past
+    @Past(message = "Дата рождения пользователя не может быть в будущем")
     private final LocalDate birthday;
     private final Set<Integer> friends = new HashSet<>();
 
