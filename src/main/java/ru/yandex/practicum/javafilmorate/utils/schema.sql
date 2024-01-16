@@ -1,33 +1,33 @@
-﻿
-CREATE TABLE "Films" (
+﻿CREATE TABLE IF NOT EXISTS "Films" (
     "FilmID" int   NOT NULL,
     "Name" varchar(50)   NOT NULL,
     "Description" varchar(200)   NOT NULL,
     "ReleaseDate" date   NOT NULL,
     "Duration" int   NOT NULL,
-    "MPA" varchar(10)   NOT NULL,
+    "MpaID" int   NOT NULL,
     CONSTRAINT "pk_Films" PRIMARY KEY (
         "FilmID"
      )
 );
 
-CREATE TABLE "Mpa" (
-    "MPA" varchar(10)   NOT NULL,
+CREATE TABLE IF NOT EXISTS "Mpa" (
+    "MpaID" int   NOT NULL,
+    "Mpa" varchar(10)   NOT NULL,
     "Description" varchar(200)   NOT NULL,
     CONSTRAINT "pk_Mpa" PRIMARY KEY (
-        "MPA"
+        "MpaID"
      )
 );
 
-CREATE TABLE "Genres" (
+CREATE TABLE IF NOT EXISTS "Genres" (
     "GenreID" int   NOT NULL,
-    "Name" varchar(10)   NOT NULL,
+    "Name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_Genres" PRIMARY KEY (
         "GenreID"
      )
 );
 
-CREATE TABLE "FilmGenres" (
+CREATE TABLE IF NOT EXISTS "FilmGenres" (
     "ID" int   NOT NULL,
     "FilmID" int   NOT NULL,
     "GenreID" int   NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE "FilmGenres" (
      )
 );
 
-CREATE TABLE "Users" (
+CREATE TABLE IF NOT EXISTS "Users" (
     "UserID" int   NOT NULL,
     "Email" varchar(200)   NOT NULL,
     "Login" varchar(50)   NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE "Users" (
      )
 );
 
-CREATE TABLE "Friends" (
+CREATE TABLE IF NOT EXISTS "Friends" (
     "ID" int   NOT NULL,
     "UserID" int   NOT NULL,
     "FriendID" int   NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE "Friends" (
      )
 );
 
-CREATE TABLE "Likes" (
+CREATE TABLE IF NOT EXISTS "Likes" (
     "LikeID" int   NOT NULL,
     "FilmID" int   NOT NULL,
     "UserID" int   NOT NULL,
@@ -66,8 +66,8 @@ CREATE TABLE "Likes" (
      )
 );
 
-ALTER TABLE "Films" ADD CONSTRAINT "fk_Films_MPA" FOREIGN KEY("MPA")
-REFERENCES "Mpa" ("MPA");
+ALTER TABLE "Films" ADD CONSTRAINT "fk_Films_MpaID" FOREIGN KEY("MpaID")
+REFERENCES "Mpa" ("MpaID");
 
 ALTER TABLE "FilmGenres" ADD CONSTRAINT "fk_FilmGenres_FilmID" FOREIGN KEY("FilmID")
 REFERENCES "Films" ("FilmID");
