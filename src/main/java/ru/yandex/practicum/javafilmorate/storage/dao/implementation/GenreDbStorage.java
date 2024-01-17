@@ -34,7 +34,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public String findById(int id) {
-        String sqlQuery = String.format("SELECT GENRE_NAME FROM GENRE WHERE GENRE_ID = %d", id);
+        String sqlQuery = String.format("SELECT GENRE_NAME FROM GENRES WHERE GENRE_ID = %d", id);
         List<String> genreNames = jdbcTemplate.queryForList(sqlQuery, String.class);
         if (genreNames.size() != 1) {
             throw new InvalidDataException("Передан некорректный id жанра");
