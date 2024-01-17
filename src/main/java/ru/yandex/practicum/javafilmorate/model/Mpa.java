@@ -1,13 +1,14 @@
 package ru.yandex.practicum.javafilmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Data
+@AllArgsConstructor
 public class Mpa {
-    private final int id;
+    private int id;
     @NotBlank(message = "Наименование рейтинга (MPA) не может быть пустым")
-    private final String rating;
+    private String name;
 }
