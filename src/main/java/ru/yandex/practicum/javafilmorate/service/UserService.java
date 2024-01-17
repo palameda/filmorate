@@ -1,25 +1,84 @@
 package ru.yandex.practicum.javafilmorate.service;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.User;
+import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
+import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public interface UserService {
-    User addUser(User user);
+@Service
+@Slf4j
+@AllArgsConstructor
+public class UserServiceImplementation {
+    private final UserStorage userStorage;
 
-    User updateUser(User user);
+    /**Добавление пользователя.*/
+    public User add(User user) {
+        user.setId(userStorage.add(user));
+        return user;
+    }
 
-    void deleteUser(User user);
+    /**Обновление пользователя.*/
+    public void update(User user) {
+        getById(user.getId());
+        userStorage.update(user);
+    }
 
-    User getUserById(int id);
+    /**Получение списка всех пользователей.*/
+    public List<User> getAll() {
+        return userStorage.findAll();
+    }
 
-    List<User> getAllUsers();
+    /**Добавление друзей.*/
+    public boolean addFriend(Integer userId, Integer friendId) {
+        getById(userId);
+        getById(friendId);
+        return userStorage.addFriendRequest(userId, friendId);
+    }
 
-    void addFriend(int selfId, int friendId);
+    /**Удаление друзей.*/
+    public void deleteFriend(Integer userId, Integer friendId) {
+        getById(userId);
+        getById(friendId);
+        if (!userStorage.deleteFriends(userId, friendId)) {
+            throw new InvalidDataException("Не удалось удалить пользователя из друзей");
+        }
+    }
 
-    void deleteFriend(int selfId, int friendId);
+    /**Вывод списка друзей*/
+    public List<User> getUserFriends(Integer userId) {
+        getById(userId);
+        List<Integer> idFriends = userStorage.findAllFriends(userId);
+        List<User> friends = new ArrayList<>();
+        for (Integer friendId : idFriends) {
+            friends.add(getById(friendId));
+        }
+        return friends;
+    }
 
-    List<User> getUserFriends(int selfId);
+    /**Вывод списка общих друзей*/
+    public List<User> getCommonFriends(Integer userId, Integer friendId) {
+        getById(userId);
+        getById(friendId);
+        List<User> commonFriends = new ArrayList<>();
+        Set<Integer> common = new HashSet<>(userStorage.findAllFriends(userId));
+        common.retainAll(userStorage.findAllFriends(friendId));
+        for (Integer id : common) {
+            commonFriends.add(getById(id));
+        }
+        return commonFriends;
+    }
 
-    List<User> getCommonFriends(int firstId, int secondId);
+    /**Получение пользователя по id.*/
+    public User getById(Integer id) {
+        return userStorage.findById(id).orElseThrow(
+                () -> new InvalidDataException("Пользователь с такими данным не зарегестрирован в системе")
+        );
+    }
 }
