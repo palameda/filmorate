@@ -24,24 +24,24 @@ create table IF NOT EXISTS FILMS
     FILM_RELEASE_DATE   DATE                   not null,
     FILM_DURATION       INTEGER                not null,
     FILM_RATE           INTEGER default 0,
-    FILM_RATE_AND_LIKES INTEGER default 0,
+    FILM_LIKES INTEGER default 0,
     constraint FILMS_PK
         primary key (FILM_ID),
     constraint FILMS_FK
-        foreign key (MPA_ID) references MPA
+        foreign key (MPA_ID) references MPA (MPA_ID)
 );
 create table IF NOT EXISTS GENRES
 (
-    GENRE_ID   INTEGER auto_increment,
+    GENRE_ID INTEGER auto_increment,
     GENRE_NAME CHARACTER VARYING(20) not null,
-    constraint GENRE_PK
+    constraint GENRES_PK
         primary key (GENRE_ID)
 );
 create table IF NOT EXISTS FRIENDS
 (
-    FIRST_USER_ID    INTEGER               not null,
-    SECOND_USER_ID INTEGER               not null,
-    PROOF        BOOLEAN default FALSE not null,
+    FIRST_USER_ID INTEGER not null,
+    SECOND_USER_ID INTEGER not null,
+    PROOF BOOLEAN default FALSE not null,
     constraint FRIENDS_FIRST_USER_ID_FK
         foreign key (FIRST_USER_ID) references USERS (USER_ID),
     constraint FRIENDS_SECOND_USER_ID_FK
@@ -52,9 +52,9 @@ create table IF NOT EXISTS FILM_GENRES
     FILM_ID  INTEGER not null,
     GENRE_ID INTEGER not null,
     constraint FILM_TO_GENRE_FILMS_FK
-        foreign key (FILM_ID) references FILMS,
+        foreign key (FILM_ID) references FILMS (FILM_ID),
     constraint FILM_TO_GENRE_GENRE_FK
-        foreign key (GENRE_ID) references GENRE
+        foreign key (GENRE_ID) references GENRE (GENRE_ID)
 );
 create table IF NOT EXISTS LIKES
 (
