@@ -15,34 +15,29 @@ import java.util.Set;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class UserServiceImplementation {
+public class UserService {
     private final UserStorage userStorage;
 
-    /**Добавление пользователя.*/
     public User add(User user) {
         user.setId(userStorage.add(user));
         return user;
     }
 
-    /**Обновление пользователя.*/
     public void update(User user) {
         getById(user.getId());
         userStorage.update(user);
     }
 
-    /**Получение списка всех пользователей.*/
     public List<User> getAll() {
         return userStorage.findAll();
     }
 
-    /**Добавление друзей.*/
     public boolean addFriend(Integer userId, Integer friendId) {
         getById(userId);
         getById(friendId);
         return userStorage.addFriendRequest(userId, friendId);
     }
 
-    /**Удаление друзей.*/
     public void deleteFriend(Integer userId, Integer friendId) {
         getById(userId);
         getById(friendId);
@@ -51,7 +46,6 @@ public class UserServiceImplementation {
         }
     }
 
-    /**Вывод списка друзей*/
     public List<User> getUserFriends(Integer userId) {
         getById(userId);
         List<Integer> idFriends = userStorage.findAllFriends(userId);
@@ -62,7 +56,6 @@ public class UserServiceImplementation {
         return friends;
     }
 
-    /**Вывод списка общих друзей*/
     public List<User> getCommonFriends(Integer userId, Integer friendId) {
         getById(userId);
         getById(friendId);
@@ -75,7 +68,6 @@ public class UserServiceImplementation {
         return commonFriends;
     }
 
-    /**Получение пользователя по id.*/
     public User getById(Integer id) {
         return userStorage.findById(id).orElseThrow(
                 () -> new InvalidDataException("Пользователь с такими данным не зарегестрирован в системе")
