@@ -90,7 +90,7 @@ public class UserDbStorage implements UserStorage {
     private boolean findFriendRequest(int firstUserId, int secondUserId) {
         String sqlQuery = String.format(
                 "SELECT COUNT(*) FROM FRIENDS " +
-                "WHERE (FIRST_USER_ID = %d OR SECOND_USER_ID = %d" +
+                "WHERE (FIRST_USER_ID = %d OR SECOND_USER_ID = %d)" +
                 " AND (FIRST_USER_ID = %d OR SECOND_USER_ID = %d)",
                 firstUserId, firstUserId, secondUserId, secondUserId);
         return jdbcTemplate.queryForObject(sqlQuery, Integer.class) == 1;
