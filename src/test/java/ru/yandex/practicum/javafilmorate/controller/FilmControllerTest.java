@@ -3,7 +3,6 @@ package ru.yandex.practicum.javafilmorate.controller;
 import org.junit.jupiter.api.*;
 
 import ru.yandex.practicum.javafilmorate.model.Film;
-import ru.yandex.practicum.javafilmorate.service.FilmServiceImplementation;
 import ru.yandex.practicum.javafilmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;

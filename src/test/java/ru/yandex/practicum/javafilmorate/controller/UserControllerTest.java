@@ -2,7 +2,7 @@ package ru.yandex.practicum.javafilmorate.controller;
 
 import org.junit.jupiter.api.*;
 import ru.yandex.practicum.javafilmorate.model.User;
-import ru.yandex.practicum.javafilmorate.service.UserServiceImplementation;
+import ru.yandex.practicum.javafilmorate.service.UserService;
 import ru.yandex.practicum.javafilmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
@@ -29,7 +29,7 @@ class UserControllerTest {
 
     @BeforeEach
     public void initializeController() {
-        controller = new UserController(new UserServiceImplementation(new InMemoryUserStorage()));
+        controller = new UserController(new UserService(new InMemoryUserStorage()));
     }
 
     @Test
