@@ -30,8 +30,8 @@ class UserDbStorageTest {
     @BeforeEach
     void createUserData() {
         if (userDbStorage.findAll().size() != 2) {
-            User firstTestUser = new User("email@yandex.ru", "Login1", "Name1", LocalDate.parse("1970-01-01"));
-            userDbStorage.add(firstTestUser);
+            User firstUser = new User("email@yandex.ru", "Login1", "Name1", LocalDate.parse("1970-01-01"));
+            userDbStorage.add(firstUser);
             User secontUser = new User("email@gmail.com", "Login2", "Name2", LocalDate.parse("1980-01-01"));
             userDbStorage.add(secontUser);
         }
