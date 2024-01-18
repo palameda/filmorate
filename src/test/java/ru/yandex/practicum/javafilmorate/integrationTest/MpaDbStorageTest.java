@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.javafilmorate.JavaFilmorateApplication;
 import ru.yandex.practicum.javafilmorate.storage.dao.implementation.MpaDbStorage;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class MpaDbStorageTest {
     private final MpaDbStorage mpaDbStorage;
+
     @Test
     @DisplayName("Проверка метода findById для Mpa")
     void testFindMpaById() {
@@ -27,8 +27,8 @@ class MpaDbStorageTest {
         mpa.add("PG-13");
         mpa.add("R");
         mpa.add("NC-17");
-        for (int i = 1; i < mpa.size()-1; i++) {
-            Assertions.assertEquals(mpaDbStorage.findById(i), mpa.get(i-1), "Названия рейтингов не совпадают");
+        for (int i = 1; i < mpa.size() - 1; i++) {
+            Assertions.assertEquals(mpaDbStorage.findById(i), mpa.get(i - 1), "Названия рейтингов не совпадают");
         }
     }
 
