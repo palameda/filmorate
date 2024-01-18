@@ -77,7 +77,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public boolean deleteGenre(int filmId, int genreId) {
         if (findFilmGenres(filmId, genreId)) {
-            String sqlQuery = "DELETE FROM FILM_TO_GENRE WHERE FILM_ID = ? AND GENRE_ID = ?";
+            String sqlQuery = "DELETE FROM FILM_GENRES WHERE FILM_ID = ? AND GENRE_ID = ?";
             return jdbcTemplate.update(sqlQuery, filmId, genreId) > 0;
         }
         log.info("Удаление жанра из фильма");
