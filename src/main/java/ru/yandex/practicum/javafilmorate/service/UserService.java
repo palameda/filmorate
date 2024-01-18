@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
-import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
+import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +42,7 @@ public class UserService {
         getById(userId);
         getById(friendId);
         if (!userStorage.deleteFriends(userId, friendId)) {
-            throw new InvalidDataException("Не удалось удалить пользователя из друзей");
+            throw new UnregisteredDataException("Не удалось удалить пользователя из друзей");
         }
     }
 
@@ -69,8 +69,12 @@ public class UserService {
     }
 
     public User getById(Integer id) {
-        return userStorage.findById(id).orElseThrow(
-                () -> new InvalidDataException("Пользователь с такими данным не зарегестрирован в системе")
-        );
+        if (id > 0 && id < 1000) {
+            return userStorage.findById(id).orElseThrow(
+                    () -> new UnregisteredDataException("Пользователь с такими данным не зарегестрирован в системе")
+            );
+        } else {
+            throw new UnregisteredDataException("Пользователь с такими данным не зарегестрирован в системе");
+        }
     }
 }

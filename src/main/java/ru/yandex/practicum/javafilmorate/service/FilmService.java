@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.model.Genre;
 import ru.yandex.practicum.javafilmorate.storage.dao.FilmStorage;
-import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
 import java.util.ArrayList;
@@ -20,11 +19,13 @@ public class FilmService {
 
     public Film getById(Integer filmId) {
         if (filmId < 9900) {
-            Film result = filmStorage.findById(filmId).orElseThrow(() -> new UnregisteredDataException("Фильм не зарегестрирован в системе"));
-            result.setGenres(genreService.getFilmGenres(result.getId()));
-            return result;
+            Film film = filmStorage.findById(filmId).orElseThrow(
+                    () -> new UnregisteredDataException("Фильм не зарегестрирован в системе")
+            );
+            film.setGenres(genreService.getFilmGenres(film.getId()));
+            return film;
         } else {
-            throw new UnregisteredDataException("Пользователь не зарегестрирован в системе");
+            throw new UnregisteredDataException("Фильм не зарегестрирован в системе");
         }
     }
 
@@ -35,7 +36,7 @@ public class FilmService {
         for (Genre genre : film.getGenres()) {
             genres.add(genreService.getById(genre.getId()));
             if (!filmStorage.setGenre(film.getId(), genre.getId())) {
-                throw new InvalidDataException("Добавить жанр фильму не удалось");
+                throw new UnregisteredDataException("Добавить жанр фильму не удалось");
             }
         }
         film.setGenres(genres);
@@ -52,7 +53,7 @@ public class FilmService {
                 genres.add(genreService.getById(genre.getId()));
             }
             if (!filmStorage.setGenre(film.getId(), genre.getId())) {
-                throw new InvalidDataException("Изменить жанр фильму не удалось");
+                throw new UnregisteredDataException("Изменить жанр фильму не удалось");
             }
         }
         List<Genre> filmGenres = genreService.getFilmGenres(film.getId());
@@ -75,14 +76,14 @@ public class FilmService {
     public void addLike(Integer filmId, Integer userId) {
         validateId(userId);
         if (!filmStorage.addLike(filmId, userId)) {
-            throw new InvalidDataException("Не удалось поставить отметку \"нравится\"");
+            throw new UnregisteredDataException("Не удалось поставить отметку \"нравится\"");
         }
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
         validateId(userId);
         if (!filmStorage.deleteLike(filmId, userId)) {
-            throw new InvalidDataException("Не удалось удалить отметку \"нравится\"");
+            throw new UnregisteredDataException("Не удалось удалить отметку \"нравится\"");
         }
     }
 
@@ -92,7 +93,7 @@ public class FilmService {
 
     private void validateId(Integer userId) {
         if (userId < 1) {
-            throw new InvalidDataException("id пользователя не может быть отрицательным");
+            throw new UnregisteredDataException("id пользователя не может быть отрицательным");
         }
     }
 }

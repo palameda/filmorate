@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.javafilmorate.model.Genre;
 import ru.yandex.practicum.javafilmorate.storage.dao.GenreStorage;
-import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
+import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,7 +37,7 @@ public class GenreDbStorage implements GenreStorage {
         String sqlQuery = String.format("SELECT GENRE_NAME FROM GENRES WHERE GENRE_ID = %d", id);
         List<String> genreNames = jdbcTemplate.queryForList(sqlQuery, String.class);
         if (genreNames.size() != 1) {
-            throw new InvalidDataException("Передан некорректный id жанра");
+            throw new UnregisteredDataException("Передан некорректный id жанра");
         }
         log.info("Получение названия жанра по id");
         return genreNames.get(0);

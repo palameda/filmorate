@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.javafilmorate.model.Mpa;
 import ru.yandex.practicum.javafilmorate.storage.dao.MpaStorage;
-import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
+import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +24,7 @@ public class MpaDbStorage implements MpaStorage {
         String sqlQuery = String.format("SELECT MPA_NAME FROM MPA WHERE MPA_ID = %d", id);
         List<String> mpaNames = jdbcTemplate.queryForList(sqlQuery, String.class);
         if (mpaNames.size() != 1) {
-            throw new InvalidDataException("Передан некорректный id рейтинга");
+            throw new UnregisteredDataException("Передан некорректный id рейтинга");
         }
         log.info("Получение названия рейтинга по id");
         return mpaNames.get(0);
