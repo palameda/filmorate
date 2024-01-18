@@ -39,7 +39,7 @@ public class GenreDbStorage implements GenreStorage {
         if (genreNames.size() != 1) {
             throw new UnregisteredDataException("Передан некорректный id жанра");
         }
-        log.info("Получение названия жанра по id");
+        log.info("Получение жанра по id {}", id);
         return genreNames.get(0);
     }
 

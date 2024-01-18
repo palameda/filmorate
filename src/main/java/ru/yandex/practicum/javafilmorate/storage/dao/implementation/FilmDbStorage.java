@@ -53,7 +53,7 @@ public class FilmDbStorage implements FilmStorage {
     public Optional<Film> findById(int id) {
         String sqlQuery = "SELECT * FROM FILMS JOIN MPA ON FILMS.MPA_ID = MPA.MPA_ID WHERE FILMS.FILM_ID = ? ";
         var result = jdbcTemplate.queryForObject(sqlQuery, this::rowMapper, id);
-        log.info("Получение фильма c id {} из хранилище",id);
+        log.info("Получение фильма c id {}",id);
         return Optional.of(result);
     }
 

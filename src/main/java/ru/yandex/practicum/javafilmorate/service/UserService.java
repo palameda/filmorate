@@ -20,27 +20,32 @@ public class UserService {
 
     public User add(User user) {
         user.setId(userStorage.add(user));
+        log.info("Пользователь с именем {} успешно добавлен", user.getName());
         return user;
     }
 
     public void update(User user) {
         getById(user.getId());
         userStorage.update(user);
+        log.info("Пользователь с id {} успешно обновлён", user.getId());
     }
 
     public List<User> getAll() {
+        log.info("Список всех пользователей получен");
         return userStorage.findAll();
     }
 
     public boolean addFriend(Integer userId, Integer friendId) {
         getById(userId);
         getById(friendId);
+        log.info("Запрос на дружбу оправлен");
         return userStorage.addFriendRequest(userId, friendId);
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
         getById(userId);
         getById(friendId);
+        log.info("Друг удалён");
         if (!userStorage.deleteFriends(userId, friendId)) {
             throw new UnregisteredDataException("Не удалось удалить пользователя из друзей");
         }
@@ -53,6 +58,7 @@ public class UserService {
         for (Integer friendId : idFriends) {
             friends.add(getById(friendId));
         }
+        log.info("Получен список друзей пользователя с id {}", userId);
         return friends;
     }
 
@@ -65,11 +71,13 @@ public class UserService {
         for (Integer id : common) {
             commonFriends.add(getById(id));
         }
+        log.info("Получен список общих друзей");
         return commonFriends;
     }
 
     public User getById(Integer id) {
         if (id > 0 && id < 1000) {
+            log.info("Пользователь по id {} успешно получен", id);
             return userStorage.findById(id).orElseThrow(
                     () -> new UnregisteredDataException("Пользователь с такими данным не зарегестрирован в системе")
             );

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.javafilmorate.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.model.Genre;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class FilmService {
@@ -23,6 +25,7 @@ public class FilmService {
                     () -> new UnregisteredDataException("Фильм не зарегестрирован в системе")
             );
             film.setGenres(genreService.getFilmGenres(film.getId()));
+            log.info("Получен фильм с id {}", film);
             return film;
         } else {
             throw new UnregisteredDataException("Фильм не зарегестрирован в системе");
@@ -40,6 +43,7 @@ public class FilmService {
             }
         }
         film.setGenres(genres);
+        log.info("Фильм {} добавлен в хранилище", film.getName());
         return film;
     }
 
@@ -63,6 +67,7 @@ public class FilmService {
             }
         }
         film.setGenres(genres);
+        log.info("Фильм {} обновлён", film.getName());
     }
 
     public List<Film> getAll() {
@@ -70,6 +75,7 @@ public class FilmService {
         for (Film film : films) {
             film.setGenres(genreService.getFilmGenres(film.getId()));
         }
+        log.info("Список фильмов получен");
         return films;
     }
 
@@ -87,8 +93,9 @@ public class FilmService {
         }
     }
 
-    public List<Film> getPopularFilms(Integer count) {
-        return filmStorage.mostPopulars(count);
+    public List<Film> getPopularFilms(Integer limit) {
+        log.info("Получен список из {} самых популярных фильмов", limit);
+        return filmStorage.mostPopulars(limit);
     }
 
     private void validateId(Integer userId) {

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.javafilmorate.storage.dao.implementation;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class UserDbStorage implements UserStorage {
@@ -20,6 +22,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Integer add(User user) {
+        log.info("Добавление пользователя с именем {}", user.getName());
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("USERS")
                 .usingGeneratedKeyColumns("USER_ID");
@@ -28,6 +31,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void update(User user) {
+        log.info("Обновление пользователя с id {}", user.getId());
         String sqlQuery = "UPDATE USERS SET USER_EMAIL = ?, USER_LOGIN = ?, USER_NAME = ?, USER_BIRTHDAY = ?" +
                 "WHERE USER_ID = ?";
         jdbcTemplate.update(sqlQuery, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(),
@@ -36,6 +40,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Optional<User> findById(int userId) {
+        log.info("Получение пользователя по id {}", userId);
         String sqlQuery = "SELECT USER_ID, USER_EMAIL, USER_LOGIN, USER_NAME, USER_BIRTHDAY " +
                 "FROM USERS WHERE USER_ID = ?";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, this::rowMapper, userId));
@@ -43,12 +48,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> findAll() {
+        log.info("Получение списка всех пользователей");
         String sqlQuery = "SELECT USER_ID, USER_EMAIL, USER_LOGIN, USER_NAME, USER_BIRTHDAY FROM USERS";
         return jdbcTemplate.query(sqlQuery, this::rowMapper);
     }
 
     @Override
     public boolean addFriendRequest(int userId, int friendId) {
+        log.info("Отправка запроса на дружбу");
         if (!findFriendRequest(userId, friendId)) {
             HashMap<String, Integer> map = new HashMap<>();
             map.put("FIRST_USER_ID", userId);
@@ -63,6 +70,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<Integer> findAllFriends(int userId) {
+        log.info("Получение всёх друзей пользователя с id {}", userId);
         String sqlQuery = String.format("SELECT SECOND_USER_ID AS friends " +
                 "FROM FRIENDS " +
                 "WHERE FIRST_USER_ID = %d", userId);
@@ -71,6 +79,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public boolean deleteFriends(int userId, int friendId) {
+        log.info("Удаление друга");
         String sqlQuery = String.format("DELETE FROM FRIENDS " +
                 "WHERE FIRST_USER_ID = %d AND SECOND_USER_ID = %d", userId, friendId);
         return jdbcTemplate.update(sqlQuery) > 0;

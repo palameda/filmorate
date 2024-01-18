@@ -26,7 +26,7 @@ public class MpaDbStorage implements MpaStorage {
         if (mpaNames.size() != 1) {
             throw new UnregisteredDataException("Передан некорректный id рейтинга");
         }
-        log.info("Получение названия рейтинга по id");
+        log.info("Получение рейтинга по id {}", id);
         return mpaNames.get(0);
     }
 
