@@ -7,13 +7,13 @@ import java.util.List;
 
 @Component
 public interface UserStorage {
-    User add(User user);
+    User addUser(User user);
 
-    User update(User user);
+    User updateUser(User user);
 
-    User delete(User user);
+    User deleteUser(User user);
 
-    User findById(int userId);
+    User findById(Integer userId);
 
     List<User> findAll();
 }
