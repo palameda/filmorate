@@ -1,16 +1,19 @@
 package ru.yandex.practicum.javafilmorate.storage.dao;
 
-import org.springframework.stereotype.Component;
+import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.model.Genre;
 
 import java.util.List;
 
-@Component
 public interface GenreStorage {
 
-    List<Genre> getGenres(int filmId);
-
-    String findById(int id);
+    Genre findById(int genreId);
 
     List<Genre> findAll();
+
+    void reloadGenres(Film film);
+
+    void deleteFilmGenre(Film film);
+
+    void addFilmGenre(Film film);
 }
