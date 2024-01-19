@@ -3,42 +3,49 @@ package ru.yandex.practicum.javafilmorate.storage.dao.implementation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.javafilmorate.model.Mpa;
 import ru.yandex.practicum.javafilmorate.storage.dao.MpaStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
 @AllArgsConstructor
+@Component
 public class MpaDbStorage implements MpaStorage {
-
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public String findById(int id) {
-        String sqlQuery = String.format("SELECT MPA_NAME FROM MPA WHERE MPA_ID = %d", id);
-        List<String> mpaNames = jdbcTemplate.queryForList(sqlQuery, String.class);
-        if (mpaNames.size() != 1) {
-            throw new UnregisteredDataException("Передан некорректный id рейтинга");
+    public Mpa findById(int mpaId) {
+        log.info("Получение рейтинга по id {}", mpaId);
+        String sqlQuery = "SELECT * FROM MPA WHERE MPA_ID = ?";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, mpaId);
+        if (rs.next()) {
+            return mpaRowMap(rs);
+        } else {
+            throw new UnregisteredDataException("MPA с id " + mpaId + " не зарегистрирован в системе");
         }
-        log.info("Получение рейтинга по id {}", id);
-        return mpaNames.get(0);
     }
 
     @Override
     public List<Mpa> findAll() {
-        String sqlQuery = "SELECT MPA_ID, MPA_NAME FROM MPA";
-        log.info("Получение списка рейтингов");
-        return jdbcTemplate.query(sqlQuery, this::rowMapper);
+        List<Mpa> mpaList = new ArrayList<>();
+        String sqlQuery = "SELECT * FROM MPA";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery);
+        while (rs.next()) {
+            mpaList.add(mpaRowMap(rs));
+        }
+        return mpaList;
     }
 
-    private Mpa rowMapper(ResultSet rs, int rowNum) throws SQLException {
-        log.info("Производится маппинг рейтинга");
-        return new Mpa(rs.getInt("MPA_ID"), rs.getString("MPA_NAME"));
+    private Mpa mpaRowMap(SqlRowSet rs) {
+        log.info("Производится маппинг MPA");
+        return new Mpa(
+                rs.getInt("MPA_ID"),
+                rs.getString("MPA_NAME")
+        );
     }
 }
