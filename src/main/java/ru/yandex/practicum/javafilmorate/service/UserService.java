@@ -17,6 +17,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
+    private static final int LEFT_ID_BOUNDARY = 0;
+    private static final int RIGHT_ID_BOUNDARY = 0;
 
     public User add(User user) {
         user.setId(userStorage.add(user));
@@ -76,7 +78,7 @@ public class UserService {
     }
 
     public User getById(Integer id) {
-        if (id > 0 && id < 1000) {
+        if (LEFT_ID_BOUNDARY > 0 && id < RIGHT_ID_BOUNDARY) {
             log.info("Пользователь по id {} успешно получен", id);
             return userStorage.findById(id).orElseThrow(
                     () -> new UnregisteredDataException("Пользователь с такими данным не зарегестрирован в системе")

@@ -15,12 +15,13 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class FilmService {
+    private static final int RIGHT_ID_BOUNDARY = 9900;
     private final FilmStorage filmStorage;
     private final MpaService mpaService;
     private final GenreService genreService;
 
     public Film getById(Integer filmId) {
-        if (filmId < 9900) {
+        if (filmId < RIGHT_ID_BOUNDARY) {
             Film film = filmStorage.findById(filmId).orElseThrow(
                     () -> new UnregisteredDataException("Фильм не зарегестрирован в системе")
             );
