@@ -7,7 +7,7 @@ import java.util.List;
 
 @Component
 public interface MpaStorage {
-    String findById(int id);
+    Mpa findById(int mpaId);
 
     List<Mpa> findAll();
 }
