@@ -67,7 +67,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void addFilmGenre(Film film) {
-        List<Genre> genres = film.getGenres();
+        List<Genre> genres = List.copyOf(film.getGenres());
         if (!genres.isEmpty()) {
             String sqlQuery = "MERGE INTO FILM_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
             jdbcTemplate.batchUpdate(sqlQuery, new BatchPreparedStatementSetter() {

@@ -7,10 +7,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -25,7 +25,7 @@ public class Film {
     private final int duration;
     private Mpa mpa;
     private int likes;
-    private List<Genre> genres = new ArrayList<>();
+    private Set<Genre> genres = new HashSet<>();
 
     public Film(Integer id, String name, String description, LocalDate releaseDate,
                 int duration, Mpa mpa, int likes) {
