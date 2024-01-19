@@ -4,25 +4,18 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.javafilmorate.model.Film;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public interface FilmStorage {
-    Integer add(Film film);
-
-    void update(Film film);
-
-    Optional<Film> findById(int id);
-
     List<Film> findAll();
 
-    boolean setGenre(int filmId, int genreId);
+    Film addFilm(Film film);
 
-    boolean deleteGenre(int filmId, int genreId);
+    Film updateFilm(Film film);
 
-    boolean addLike(int filmId, int userId);
+    void deleteFilm(int filmId);
 
-    List<Film> mostPopulars(int limit);
+    Film findById(int id);
 
-    boolean deleteLike(int filmId, int userId);
+    List<Film> getPopularFilms(int limit);
 }
