@@ -1,12 +1,16 @@
 package ru.yandex.practicum.javafilmorate.model;
 
 import lombok.Data;
+import ru.yandex.practicum.javafilmorate.validation.ReleaseDateValidation;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Data
 public class Film {
@@ -15,23 +19,23 @@ public class Film {
     private final String name;
     @Size(max = 200, message = "Размер описания не должен превышать 200 символов")
     private final String description;
+    @ReleaseDateValidation(message = "Дата показа не может предшествовать 28 декабря 1895 года")
     private final LocalDate releaseDate;
     @Positive(message = "Продолжительнось фильма должна быть больше 0")
     private final int duration;
-    private int rating;
     private Mpa mpa;
-    private List<Genre> genres;
     private int likes;
+    private List<Genre> genres = new ArrayList<>();
 
-    public Film(String name, String description, LocalDate releaseDate,
-                int duration, int rate, Mpa mpa, List<Genre> genres) {
+    public Film(Integer id, String name, String description, LocalDate releaseDate,
+                int duration, Mpa mpa, int likes) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.rating = Objects.requireNonNullElse(rate, 0);
         this.mpa = mpa;
-        this.genres = Objects.requireNonNullElseGet(genres, ArrayList::new);
+        this.likes = likes;
     }
 
     public Map<String, Object> filmRowMap() {
@@ -40,9 +44,7 @@ public class Film {
         values.put("FILM_DESCRIPTION", description);
         values.put("FILM_RELEASE_DATE", releaseDate);
         values.put("FILM_DURATION", duration);
-        values.put("FILM_RATE", rating);
         values.put("MPA_ID", mpa.getId());
-        values.put("FILM_LIKES", likes);
         return values;
     }
 }

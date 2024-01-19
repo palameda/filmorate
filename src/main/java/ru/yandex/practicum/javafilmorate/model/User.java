@@ -1,5 +1,7 @@
 package ru.yandex.practicum.javafilmorate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -8,8 +10,11 @@ import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
 public class User {
     private int id;
     @Email(message = "Передан некорректный e-mail адрес")
@@ -19,13 +24,7 @@ public class User {
     private String name;
     @Past(message = "Дата рождения пользователя не может быть в будущем")
     private final LocalDate birthday;
-
-    public User(String email, String login, String name, LocalDate birthday) {
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
-    }
+    private Set<Integer> friends;
 
     public Map<String, Object> userRowMap() {
         Map<String, Object> userRow = new HashMap<>();
