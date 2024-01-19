@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 public class User {
-    private int id;
+    private Integer id;
     @Email(message = "Передан некорректный e-mail адрес")
     private String email;
     @NotBlank(message = "Поле login не должно быть пустым")
