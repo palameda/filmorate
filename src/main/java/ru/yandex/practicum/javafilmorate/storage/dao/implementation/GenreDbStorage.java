@@ -67,9 +67,10 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void addFilmGenre(Film film) {
+        log.info("Добавление жанров фильма в таблицу");
         List<Genre> genres = List.copyOf(film.getGenres());
         if (!genres.isEmpty()) {
-            String sqlQuery = "MERGE INTO FILM_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
+            String sqlQuery = "INSERT INTO FILM_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
             jdbcTemplate.batchUpdate(sqlQuery, new BatchPreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement ps, int i) throws SQLException {

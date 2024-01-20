@@ -21,7 +21,7 @@ public class FriendsDbStorage implements FriendStorage {
     public void addFriend(int userId, int friendId) {
         isRegistered(userId);
         isRegistered(friendId);
-        String sqlQuery = "MERGE INTO FRIENDS (USER_ID, FRIEND_ID) VALUES (?, ?)";
+        String sqlQuery = "INSERT INTO FRIENDS (USER_ID, FRIEND_ID) VALUES (?, ?)";
         jdbcTemplate.update(sqlQuery, userId, friendId);
         log.info("Пользователь с id {} получил запрос дружбы от пользователя с id {}", userId, friendId);
     }
@@ -72,6 +72,7 @@ public class FriendsDbStorage implements FriendStorage {
     }
 
     private void isRegistered(int userId) {
+        log.info("Проверка регистрации пользователя в системе");
         String sqlQuery = "SELECT * FROM USERS WHERE USER_ID = ?";
         SqlRowSet userRow = jdbcTemplate.queryForRowSet(sqlQuery, userId);
         if (!userRow.next()) {

@@ -43,6 +43,7 @@ public class LikesDbStorage implements LikeStorage {
     }
 
     private void isFilmRegistered(int filmId) {
+        log.info("Проверка регистрации фильма с {id} в системе", filmId);
         String sqlQuery = "SELECT * FROM FILMS WHERE FILM_ID = ?";
         SqlRowSet filmRow = jdbcTemplate.queryForRowSet(sqlQuery, filmId);
         if (!filmRow.next()) {
@@ -51,6 +52,7 @@ public class LikesDbStorage implements LikeStorage {
     }
 
     private void isUserRegistered(int userId) {
+        log.info("Проверка регистрации пользователя с id {} в системе", userId);
         String sqlQuery = "SELECT * FROM USERS WHERE USER_ID = ?";
         SqlRowSet userRow = jdbcTemplate.queryForRowSet(sqlQuery, userId);
         if (!userRow.next()) {

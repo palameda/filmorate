@@ -32,6 +32,7 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public List<Mpa> findAll() {
+        log.info("Получение списа всех рейтингов");
         List<Mpa> mpaList = new ArrayList<>();
         String sqlQuery = "SELECT * FROM MPA";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery);

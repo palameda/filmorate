@@ -70,6 +70,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User findById(Integer userId) {
+        log.info("Получение пользователя по id {}", userId);
         if (userId == null) {
             throw new UnregisteredDataException("При поиске пользователя был передан id равный null");
         }

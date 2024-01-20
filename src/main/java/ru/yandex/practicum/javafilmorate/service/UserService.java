@@ -17,12 +17,12 @@ public class UserService {
     private final FriendStorage friendStorage;
 
     public User addUser(User user) {
-        log.info("Отправлен запрос к хранилищу на добавление пользователя {}", user.getName());
+        log.info("Отправлен запрос к хранилищу на добавление пользователя с id {}", user.getId());
         return userStorage.addUser(user);
     }
 
     public User updateUser(User user) {
-        log.info("Отправлен запрос к хранилищу на обновление пользователя {}", user.getName());
+        log.info("Отправлен запрос к хранилищу на обновление пользователя с id {}", user.getId());
         return userStorage.updateUser(user);
     }
 

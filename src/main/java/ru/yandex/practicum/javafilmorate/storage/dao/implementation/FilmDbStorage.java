@@ -105,10 +105,12 @@ public class FilmDbStorage implements FilmStorage {
         while (rs.next()) {
             films.add(filmRowMap(rs));
         }
+        log.info("Получение списка {} самых популярных фильмов", limit);
         return films;
     }
 
     private Film filmRowMap(SqlRowSet rs) {
+        log.info("Производится маппинг фильма");
         Film film = new Film(
                 rs.getInt("FILM_ID"),
                 rs.getString("FILM_NAME"),
@@ -122,6 +124,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Genre genreRowMap(SqlRowSet rs) {
+        log.info("Производится маппинг жанра");
         return new Genre(
                 rs.getInt("GENRE_ID"),
                 rs.getString("GENRE_NAME")
@@ -129,6 +132,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private int getFilmLikes(int filmId) {
+        log.info("Получение количества отметок \"лайк\" для фильма с id {}", filmId);
         String sqlQuery = "SELECT COUNT(FILM_ID) AS AMOUNT FROM LIKES WHERE FILM_ID = ?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, filmId);
         if (rs.next()) {
@@ -146,11 +150,13 @@ public class FilmDbStorage implements FilmStorage {
         while (rs.next()) {
             filmGenres.add(genreRowMap(rs));
         }
+        log.info("Получение жарнов для фильма с id {}", filmId);
         return filmGenres;
     }
 
     private SqlRowSet getAllFilms(int filmId) {
         String sqlQuery = "SELECT * FROM FILMS WHERE FILM_ID = ?";
+        log.info("Получение rowSet фильма с id {}", filmId);
         return jdbcTemplate.queryForRowSet(sqlQuery, filmId);
     }
 
@@ -158,7 +164,7 @@ public class FilmDbStorage implements FilmStorage {
         log.info("Производится добавление жанов для фильма {}", film.getName());
         isGenreRegistered(film);
         List<Genre> genres = List.copyOf(film.getGenres());
-        String sqlQuery = "MERGE INTO FILM_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
+        String sqlQuery = "INSERT INTO FILM_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
         jdbcTemplate.batchUpdate(sqlQuery, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {

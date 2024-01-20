@@ -22,12 +22,12 @@ public class FilmService {
     }
 
     public Film addFilm(Film film) {
-        log.info("Отправлен запрос к хранилищу на добавление фильма {}", film.getName());
+        log.info("Отправлен запрос к хранилищу на добавление фильма с id {}", film.getId());
         return filmStorage.addFilm(film);
     }
 
     public Film updateFilm(Film film) {
-        log.info("Отправлен запрос к хранилищу на обновление фильма {}", film.getName());
+        log.info("Отправлен запрос к хранилищу на обновление фильма с id {}", film.getId());
         return filmStorage.updateFilm(film);
     }
 
