@@ -17,51 +17,40 @@ import java.util.List;
 @AllArgsConstructor
 public class FilmController {
     private final FilmService filmService;
-    private static final LocalDate VALID_DATE = LocalDate.of(1895, 12, 28);
 
     @GetMapping("/{id}")
-    public ResponseEntity<Film> getFilmById(@PathVariable int id) {
-        return new ResponseEntity<>(filmService.getById(id), HttpStatus.OK);
+    public Film findById(@PathVariable int id) {
+        return filmService.findById(id);
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getPopularFilms(@RequestParam(required = false, defaultValue = "10") int count) {
-        return new ResponseEntity<>(filmService.getPopularFilms(count), HttpStatus.OK);
+    public List<Film> getPopularFilms(@RequestParam(required = false, defaultValue = "10") int limit) {
+        return filmService.getPopularFilms(limit);
     }
 
     @GetMapping
     public List<Film> findAll() {
-        return filmService.getAll();
+        return filmService.findAll();
     }
 
     @PostMapping
-    public Film createFilm(@Valid @RequestBody Film film) {
-        validateDate(film);
-        return filmService.add(film);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Film addFilm(@Valid @RequestBody Film film) {
+        return filmService.addFilm(film);
     }
 
     @PutMapping
-    public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
-        validateDate(film);
-        filmService.update(film);
-        return new ResponseEntity<>(film, HttpStatus.OK);
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        return filmService.updateFilm(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public ResponseEntity<Film> addLike(@PathVariable int id, @PathVariable int userId) {
+    public void addLike(@PathVariable int id, @PathVariable int userId) {
         filmService.addLike(id, userId);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public ResponseEntity<Film> deleteLike(@PathVariable int id, @PathVariable int userId) {
+    public void deleteLike(@PathVariable int id, @PathVariable int userId) {
         filmService.deleteLike(id, userId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    private void validateDate(Film film) {
-        if (film.getReleaseDate().isBefore(VALID_DATE)) {
-            throw new InvalidDataException("Дата релиза не может быть раньше 28 декабря 1895");
-        }
     }
 }
