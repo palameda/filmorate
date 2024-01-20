@@ -21,7 +21,7 @@ public class LikesDbStorage implements LikeStorage {
         isFilmRegistered(filmId);
         isUserRegistered(userId);
         log.info("Сохранение отметки\"like\" фильму с id {} от пользователя с id {}", filmId, userId);
-        String sqlQuery = "MERGE INTO LIKES (FILM_ID, USER_ID) VALUES (?, ?)";
+        String sqlQuery = "INSERT INTO LIKES (FILM_ID, USER_ID) VALUES (?, ?)";
         jdbcTemplate.update(sqlQuery, filmId, userId);
     }
 
