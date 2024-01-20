@@ -4,87 +4,55 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.User;
+import ru.yandex.practicum.javafilmorate.storage.dao.FriendStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
-import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
-    private static final int LEFT_ID_BOUNDARY = 0;
-    private static final int RIGHT_ID_BOUNDARY = 1000;
+    private final FriendStorage friendStorage;
 
     public User add(User user) {
-        user.setId(userStorage.add(user));
-        log.info("Пользователь с именем {} успешно добавлен", user.getName());
-        return user;
+        log.info("Отправлен запрос к хранилищу на добавление пользователя {}", user.getName());
+        return userStorage.addUser(user);
     }
 
-    public void update(User user) {
-        getById(user.getId());
-        userStorage.update(user);
-        log.info("Пользователь с id {} успешно обновлён", user.getId());
+    public User update(User user) {
+        log.info("Отправлен запрос к хранилищу на обновление пользователя {}", user.getName());
+        return userStorage.updateUser(user);
     }
 
-    public List<User> getAll() {
-        log.info("Список всех пользователей получен");
+    public List<User> findAll() {
+        log.info("Отправлен запрос к хранилищу на получение списка всех пользователей");
         return userStorage.findAll();
     }
 
-    public boolean addFriend(Integer userId, Integer friendId) {
-        getById(userId);
-        getById(friendId);
-        log.info("Запрос на дружбу оправлен");
-        return userStorage.addFriendRequest(userId, friendId);
+    public void addFriend(Integer userId, Integer friendId) {
+        log.info("Отправлен запрос к хранилищу на добавление пользователю с id {} друга с id {}", userId, friendId);
+        friendStorage.addFriend(userId, friendId);
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
-        getById(userId);
-        getById(friendId);
-        log.info("Друг удалён");
-        if (!userStorage.deleteFriends(userId, friendId)) {
-            throw new UnregisteredDataException("Не удалось удалить пользователя из друзей");
-        }
+        log.info("Отправлен запрос к хранилищу на удаление у пользователя с id {} друга с id {}", userId, friendId);
+        friendStorage.deleteFriend(userId, friendId);
     }
 
     public List<User> getUserFriends(Integer userId) {
-        getById(userId);
-        List<Integer> idFriends = userStorage.findAllFriends(userId);
-        List<User> friends = new ArrayList<>();
-        for (Integer friendId : idFriends) {
-            friends.add(getById(friendId));
-        }
-        log.info("Получен список друзей пользователя с id {}", userId);
-        return friends;
+        log.info("Отправлен запрос к хранилищу на получение списка всех друзей пользователя с id {}", userId);
+        return friendStorage.getUserFriends(userId);
     }
 
     public List<User> getCommonFriends(Integer userId, Integer friendId) {
-        getById(userId);
-        getById(friendId);
-        List<User> commonFriends = new ArrayList<>();
-        Set<Integer> common = new HashSet<>(userStorage.findAllFriends(userId));
-        common.retainAll(userStorage.findAllFriends(friendId));
-        for (Integer id : common) {
-            commonFriends.add(getById(id));
-        }
-        log.info("Получен список общих друзей");
-        return commonFriends;
+        log.info("Отправлен запрос к хранилищу на получение списка общих друзей пользователей с id {} и id {}", userId, friendId);
+        return friendStorage.getCommonsFriends(userId, friendId);
     }
 
-    public User getById(Integer id) {
-        if (id > LEFT_ID_BOUNDARY && id < RIGHT_ID_BOUNDARY) {
-            log.info("Пользователь по id {} успешно получен", id);
-            return userStorage.findById(id).orElseThrow(
-                    () -> new UnregisteredDataException("Пользователь с такими данным не зарегестрирован в системе")
-            );
-        } else {
-            throw new UnregisteredDataException("Пользователь с такими данным не зарегестрирован в системе");
-        }
+    public User getById(Integer userId) {
+        log.info("Отправлен запрос к хранилищу на получение пользователя по id {}", userId);
+        return userStorage.findById(userId);
     }
 }
