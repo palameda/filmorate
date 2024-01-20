@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.Genre;
 import ru.yandex.practicum.javafilmorate.storage.dao.GenreStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -14,18 +15,13 @@ import java.util.List;
 public class GenreService {
     private final GenreStorage genreStorage;
 
-    public List<Genre> getFilmGenres(int filmId) {
-        log.info("Получение жанров для фильма с id {}", filmId);
-        return genreStorage.getGenres(filmId);
-    }
-
-    public Genre getById(int id) {
-        log.info("Получен жанр по id {}", id);
-        return new Genre(id, genreStorage.findById(id));
+    public Genre getById(int genreId) {
+        log.info("Отправлен запрос к хранилищу на получение жанра с id {}", genreId);
+        return genreStorage.findById(genreId);
     }
 
     public List<Genre> getAll() {
-        log.info("Получен список жанров");
+        log.info("Отправлен запрос к хранилищу на получение списка рейтингов");
         return genreStorage.findAll();
     }
 }
