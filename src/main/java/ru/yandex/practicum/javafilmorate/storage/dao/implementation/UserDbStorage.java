@@ -78,10 +78,10 @@ public class UserDbStorage implements UserStorage {
         if (rs.first()) {
             user = new User(
                     rs.getInt("USER_ID"),
-                    rs.getString("email"),
-                    rs.getString("login"),
-                    rs.getString("name"),
-                    rs.getDate("birthday").toLocalDate(),
+                    rs.getString("USER_EMAIL"),
+                    rs.getString("USER_LOGIN"),
+                    rs.getString("USER_NAME"),
+                    rs.getDate("USER_BIRTHDAY").toLocalDate(),
                     null
             );
         } else {

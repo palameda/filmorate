@@ -21,7 +21,7 @@ public class FriendsDbStorage implements FriendStorage {
     public void addFriend(int userId, int friendId) {
         isRegistered(userId);
         isRegistered(friendId);
-        String sqlQuery = "MERGE INTO FRIENDS(USER_ID, FRIEND_ID) VALUES (?, ? )";
+        String sqlQuery = "MERGE INTO FRIENDS (USER_ID, FRIEND_ID) VALUES (?, ?)";
         jdbcTemplate.update(sqlQuery, userId, friendId);
         log.info("Пользователь с id {} получил запрос дружбы от пользователя с id {}", userId, friendId);
     }
@@ -43,10 +43,10 @@ public class FriendsDbStorage implements FriendStorage {
                 " JOIN USERS ON FRIENDS.FRIEND_ID = USERS.USER_ID WHERE FRIENDS.USER_ID = ?";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> new User(
                         rs.getInt("USER_ID"),
-                        rs.getString("EMAIL"),
-                        rs.getString("LOGIN"),
-                        rs.getString("NAME"),
-                        rs.getDate("BIRTHDAY").toLocalDate(),
+                        rs.getString("USER_EMAIL"),
+                        rs.getString("USER_LOGIN"),
+                        rs.getString("USER_NAME"),
+                        rs.getDate("USER_BIRTHDAY").toLocalDate(),
                         null),
                 userId
         );
@@ -63,10 +63,10 @@ public class FriendsDbStorage implements FriendStorage {
                 " ON TBL1.FRIEND_ID = TBL2.FRIEND_ID)) ";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> new User(
                         rs.getInt("USER_ID"),
-                        rs.getString("EMAIL"),
-                        rs.getString("LOGIN"),
-                        rs.getString("NAME"),
-                        rs.getDate("BIRTHDAY").toLocalDate(),
+                        rs.getString("USER_EMAIL"),
+                        rs.getString("USER_LOGIN"),
+                        rs.getString("USER_NAME"),
+                        rs.getDate("USER_BIRTHDAY").toLocalDate(),
                         null),
                 userId, friendId);
     }

@@ -150,7 +150,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private SqlRowSet getAllFilms(int filmId) {
-        String sqlQuery = "SELECT * FROM FILMS WHERE FILMS = ?";
+        String sqlQuery = "SELECT * FROM FILMS WHERE FILM_ID = ?";
         return jdbcTemplate.queryForRowSet(sqlQuery, filmId);
     }
 
@@ -171,9 +171,6 @@ public class FilmDbStorage implements FilmStorage {
                 return genres.size();
             }
         });
-//        for (Genre genre : film.getGenres()) {
-//            jdbcTemplate.update(sqlQuery, film.getId(), genre.getId());
-//        }
     }
 
     private void deleteFilmGenres(int filmId) {
@@ -185,7 +182,6 @@ public class FilmDbStorage implements FilmStorage {
     private void isGenreRegistered(Film film) {
         log.info("Проверка жанров фильма {} на существование", film.getName());
         String sqlQuery = "SELECT * FROM GENRES WHERE GENRE_ID = ?";
-        // не понимаю как это сделать без цикла
         for (Genre genre : film.getGenres()) {
             if (!jdbcTemplate.queryForRowSet(sqlQuery, genre.getId()).next()) {
                 throw new UnregisteredDataException("Жанр с id " + genre.getId() + " не зарегистрирован в системе");
