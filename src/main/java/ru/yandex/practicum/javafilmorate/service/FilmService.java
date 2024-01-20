@@ -26,7 +26,7 @@ public class FilmService {
         return filmStorage.addFilm(film);
     }
 
-    public Film update(Film film) {
+    public Film updateFilm(Film film) {
         log.info("Отправлен запрос к хранилищу на обновление фильма {}", film.getName());
         return filmStorage.updateFilm(film);
     }
