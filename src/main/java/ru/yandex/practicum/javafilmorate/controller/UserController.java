@@ -15,53 +15,52 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
-    private static final String LINE = "*".repeat(8) + "\n";
 
     @GetMapping
     public List<User> findAll() {
-        log.info(LINE + "get all users");
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /users");
         return userService.findAll();
     }
 
     @GetMapping("/{id}")
     public User findById(@PathVariable int id) {
-        log.info(LINE + "get user by id");
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /users/{}", id);
         return userService.findById(id);
     }
 
     @GetMapping("/{id}/friends")
     public List<User> getUserFriends(@PathVariable int id) {
-        log.info(LINE + "get user friends");
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /users/{}/friends", id);
         return userService.getUserFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable int id, @PathVariable int otherId) {
-        log.info(LINE + "get common friends");
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /users/{}/friends/common/{}", id, otherId);
         return userService.getCommonFriends(id, otherId);
     }
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
-        log.info(LINE + "post user");
+        log.info("КОНТРОЛЛЕР: POST-запрос по эндпоинту /users");
         return userService.addUser(user);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable int id, @PathVariable int friendId) {
-        log.info(LINE + "put add friend");
+        log.info("КОНТРОЛЛЕР: PUT-запрос по эндпоинту /users/{}/friends/{}", id, friendId);
         userService.addFriend(id, friendId);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        log.info(LINE + "put update user");
+        log.info("КОНТРОЛЛЕР: PUT-запрос по эндпоинту /users");
         return userService.updateUser(user);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
-        log.info(LINE + "delete friend");
+        log.info("КОНТРОЛЛЕР: DELETE-запрос по эндпоинту /users/{}/friends/{}", id, friendId);
         userService.deleteFriend(id, friendId);
     }
 }

@@ -28,7 +28,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> findAll() {
-        log.info("Получение из хранилища списка всех фильмов");
+        log.info("ХРАНИЛИЩЕ: Получение из хранилища списка всех фильмов");
         String sqlQuery = "SELECT * FROM FILMS";
         List<Film> films = new ArrayList<>();
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery);
@@ -40,7 +40,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        log.info("Добавление фильма {} в хранилище", film.getName());
+        log.info("ХРАНИЛИЩЕ: Добавление фильма с id {} в хранилище", film.getId());
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("FILMS")
                 .usingGeneratedKeyColumns("FILM_ID");
@@ -51,7 +51,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        log.info("Обновление данных по фильму с id {}", film.getId());
+        log.info("ХРАНИЛИЩЕ: Обновление данных по фильму с id {}", film.getId());
         if (getAllFilms(film.getId()).next()) {
             String sqlQuery = "UPDATE FILMS SET FILM_NAME = ?, FILM_DESCRIPTION = ?, FILM_RELEASE_DATE = ?, " +
                     "FILM_DURATION = ?, MPA_ID = ? WHERE FILM_ID = ?";
@@ -74,7 +74,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteFilm(int filmId) {
-        log.info("Удаление из хранилища фильма с id {}", filmId);
+        log.info("ХРАНИЛИЩЕ: Удаление из хранилища фильма с id {}", filmId);
         if (filmId == 0) {
             throw new UnregisteredDataException("Фильм с id " + filmId + " не зарегистрирован в системе");
         }
@@ -86,7 +86,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film findById(int filmId) {
-        log.info("Получение фильма по id {}", filmId);
+        log.info("ХРАНИЛИЩЕ: Получение фильма по id {}", filmId);
         String sqlQuery = "SELECT * FROM FILMS WHERE FILM_ID = ?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, filmId);
         if (rs.next()) {
@@ -107,12 +107,12 @@ public class FilmDbStorage implements FilmStorage {
         while (rs.next()) {
             films.add(filmRowMap(rs));
         }
-        log.info("Получение списка {} самых популярных фильмов", limit);
+        log.info("ХРАНИЛИЩЕ: Получение списка {} самых популярных фильмов", limit);
         return films;
     }
 
     private Film filmRowMap(SqlRowSet rs) {
-        log.info("Производится маппинг фильма");
+        log.info("ХРАНИЛИЩЕ: Производится маппинг фильма");
         Film film = new Film(
                 rs.getInt("FILM_ID"),
                 rs.getString("FILM_NAME"),
@@ -126,7 +126,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Genre genreRowMap(SqlRowSet rs) {
-        log.info("Производится маппинг жанра");
+        log.info("ХРАНИЛИЩЕ: Производится маппинг жанра");
         return new Genre(
                 rs.getInt("GENRE_ID"),
                 rs.getString("GENRE_NAME")
@@ -134,7 +134,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private int getFilmLikes(int filmId) {
-        log.info("Получение количества отметок \"лайк\" для фильма с id {}", filmId);
+        log.info("ХРАНИЛИЩЕ: Получение количества отметок \"лайк\" для фильма с id {}", filmId);
         String sqlQuery = "SELECT COUNT(FILM_ID) AS AMOUNT FROM LIKES WHERE FILM_ID = ?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, filmId);
         if (rs.next()) {
@@ -152,18 +152,18 @@ public class FilmDbStorage implements FilmStorage {
         while (rs.next()) {
             filmGenres.add(genreRowMap(rs));
         }
-        log.info("Получение жарнов для фильма с id {}", filmId);
+        log.info("ХРАНИЛИЩЕ: Получение жарнов для фильма с id {}", filmId);
         return filmGenres;
     }
 
     private SqlRowSet getAllFilms(int filmId) {
         String sqlQuery = "SELECT * FROM FILMS WHERE FILM_ID = ?";
-        log.info("Получение rowSet фильма с id {}", filmId);
+        log.info("ХРАНИЛИЩЕ: Получение rowSet фильма с id {}", filmId);
         return jdbcTemplate.queryForRowSet(sqlQuery, filmId);
     }
 
     private void fillFilmGenres(Film film) {
-        log.info("Производится добавление жанов для фильма {}", film.getName());
+        log.info("ХРАНИЛИЩЕ: Производится добавление жанов для фильма {}", film.getName());
         isGenreRegistered(film);
         List<Genre> genres = List.copyOf(film.getGenres());
         String sqlQuery = "INSERT INTO FILM_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
@@ -182,13 +182,13 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void deleteFilmGenres(int filmId) {
-        log.info("Производится удаление жанров у фильма с id {}", filmId);
+        log.info("ХРАНИЛИЩЕ: Производится удаление жанров у фильма с id {}", filmId);
         String sqlQuery = "DELETE FROM FILM_GENRES WHERE FILM_ID = ?";
         jdbcTemplate.update(sqlQuery, filmId);
     }
 
     private void isGenreRegistered(Film film) {
-        log.info("Проверка жанров фильма {} на существование", film.getName());
+        log.info("ХРАНИЛИЩЕ: Проверка жанров фильма с id {} на существование", film.getId());
         String sqlQuery = "SELECT * FROM GENRES WHERE GENRE_ID = ?";
         for (Genre genre : film.getGenres()) {
             if (!jdbcTemplate.queryForRowSet(sqlQuery, genre.getId()).next()) {

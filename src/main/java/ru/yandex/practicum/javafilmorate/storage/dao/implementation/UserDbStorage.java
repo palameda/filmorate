@@ -26,7 +26,7 @@ public class UserDbStorage implements UserStorage {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        log.info("Cоздание пользователя с id {}", user.getId());
+        log.info("ХРАНИЛИЩЕ: Cоздание пользователя с id {}", user.getId());
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("USERS")
                 .usingGeneratedKeyColumns("USER_ID");
@@ -39,7 +39,7 @@ public class UserDbStorage implements UserStorage {
         if (user.getId() == null) {
             throw new UnregisteredDataException("При обновлении данных передан пользователь без id");
         }
-        log.info("Обновление пользователя с id {}", user.getId());
+        log.info("ХРАНИЛИЩЕ: Обновление пользователя с id {}", user.getId());
         if (findById(user.getId()) != null) {
             String sqlQuery = "UPDATE USERS SET USER_EMAIL = ?, USER_LOGIN = ?, USER_NAME = ?, USER_BIRTHDAY = ? " +
                     "WHERE USER_ID = ?";
@@ -60,7 +60,7 @@ public class UserDbStorage implements UserStorage {
         if (user == null) {
             throw new UnregisteredDataException("При удалении пользователя был передан null");
         }
-        log.info("Удаление пользователя с id {}", user.getId());
+        log.info("ХРАНИЛИЩЕ: Удаление пользователя с id {}", user.getId());
         if (findById(user.getId()) != null) {
             String sqlQuery = "DELETE FROM USERS WHERE USER_ID = ?";
             jdbcTemplate.update(sqlQuery, user.getId());
@@ -70,7 +70,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User findById(Integer userId) {
-        log.info("Получение пользователя по id {}", userId);
+        log.info("ХРАНИЛИЩЕ: Получение пользователя по id {}", userId);
         if (userId == null) {
             throw new UnregisteredDataException("При поиске пользователя был передан id равный null");
         }
@@ -93,7 +93,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> findAll() {
-        log.info("Получение списка всех пользователей");
+        log.info("ХРАНИЛИЩЕ: Получение списка всех пользователей");
         String sqlQuery = "SELECT * FROM USERS";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> new User(
                 rs.getInt("USER_ID"),

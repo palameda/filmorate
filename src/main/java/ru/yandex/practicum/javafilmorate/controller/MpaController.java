@@ -17,17 +17,16 @@ import java.util.List;
 @RequestMapping("/mpa")
 public class MpaController {
     private final MpaService mpaService;
-    private static final String LINE = "*".repeat(8) + "\n";
 
     @GetMapping()
     public List<Mpa> findAll() {
-        log.info(LINE + "get all mpa");
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /mpa");
         return mpaService.findAll();
     }
 
     @GetMapping("/{id}")
     public Mpa findById(@PathVariable Integer id) {
-        log.info(LINE + "get mpa by id");
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /genres/{}", id);
         return mpaService.findById(id);
     }
 }

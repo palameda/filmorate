@@ -25,7 +25,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Genre findById(int genreId) {
-        log.info("Получение жанра по id {}", genreId);
+        log.info("ХРАНИЛИЩЕ: Получение жанра по id {}", genreId);
         SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM GENRES WHERE GENRE_ID = ?", genreId);
         if (rs.next()) {
             return new Genre(
@@ -39,7 +39,7 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public List<Genre> findAll() {
-        log.info("Получение из хранилища списка всех жанров");
+        log.info("ХРАНИЛИЩЕ: Получение из хранилища списка всех жанров");
         List<Genre> genres = new ArrayList<>();
         SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM GENRES");
         while (rs.next()) {
@@ -54,20 +54,20 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void reloadGenres(Film film) {
-        log.info("Перезапись-обновление жанров для фильма с {}", film.getName());
+        log.info("ХРАНИЛИЩЕ: Перезапись-обновление жанров для фильма с {}", film.getName());
         deleteFilmGenre(film);
         addFilmGenre(film);
     }
 
     @Override
     public void deleteFilmGenre(Film film) {
-        log.info("Удаление жанров для фильма {}", film.getName());
+        log.info("ХРАНИЛИЩЕ: Удаление жанров для фильма {}", film.getName());
         jdbcTemplate.update("DELETE FROM FILM_GENRES WHERE FILM_ID = ?", film.getId());
     }
 
     @Override
     public void addFilmGenre(Film film) {
-        log.info("Добавление жанров фильма в таблицу");
+        log.info("ХРАНИЛИЩЕ: Добавление жанров фильма в таблицу");
         List<Genre> genres = List.copyOf(film.getGenres());
         if (!genres.isEmpty()) {
             String sqlQuery = "INSERT INTO FILM_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
@@ -84,11 +84,5 @@ public class GenreDbStorage implements GenreStorage {
                 }
             });
         }
-//        if (film.getGenres() != null) {
-//            for (Genre genre : film.getGenres()) {
-//                jdbcTemplate.update("INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)",
-//                        film.getId(), genre.getId());
-//            }
-//        }
     }
 }

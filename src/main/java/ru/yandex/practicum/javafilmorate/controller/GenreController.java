@@ -18,17 +18,16 @@ import java.util.List;
 @RequestMapping("/genres")
 public class GenreController {
     private final GenreService genreService;
-    private static final String LINE = "*".repeat(8) + "\n";
 
     @GetMapping()
     public List<Genre> findAll() {
-        log.info(LINE + "get all genres");
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /genres");
         return genreService.findAll();
     }
 
     @GetMapping("/{id}")
     public Genre findById(@PathVariable Integer id) {
-        log.info(LINE + "get genre by id");
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /genres/{}", id);
         return genreService.findById(id);
     }
 }

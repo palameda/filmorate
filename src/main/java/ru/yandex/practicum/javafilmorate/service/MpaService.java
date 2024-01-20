@@ -15,12 +15,12 @@ public class MpaService {
     private final MpaStorage mpaStorage;
 
     public Mpa findById(int mpaId) {
-        log.info("Отправлен запрос к хранилищу на получение рейтинга с id {}", mpaId);
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение рейтинга с id {}", mpaId);
         return mpaStorage.findById(mpaId);
     }
 
     public List<Mpa> findAll() {
-        log.info("Отправлен запрос к хранилищу на получение списка рейтнгов");
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка рейтнгов");
         return mpaStorage.findAll();
     }
 }

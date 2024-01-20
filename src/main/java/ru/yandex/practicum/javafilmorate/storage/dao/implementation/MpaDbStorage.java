@@ -20,7 +20,7 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public Mpa findById(int mpaId) {
-        log.info("Получение рейтинга по id {}", mpaId);
+        log.info("ХРАНИЛИЩЕ: Получение рейтинга по id {}", mpaId);
         String sqlQuery = "SELECT * FROM MPA WHERE MPA_ID = ?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, mpaId);
         if (rs.next()) {
@@ -32,7 +32,7 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public List<Mpa> findAll() {
-        log.info("Получение списа всех рейтингов");
+        log.info("ХРАНИЛИЩЕ: Получение списа всех рейтингов");
         List<Mpa> mpaList = new ArrayList<>();
         String sqlQuery = "SELECT * FROM MPA";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery);
@@ -43,7 +43,7 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     private Mpa mpaRowMap(SqlRowSet rs) {
-        log.info("Производится маппинг MPA");
+        log.info("ХРАНИЛИЩЕ: Производится маппинг MPA");
         return new Mpa(
                 rs.getInt("MPA_ID"),
                 rs.getString("MPA_NAME")

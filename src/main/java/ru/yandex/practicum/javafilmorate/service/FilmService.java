@@ -17,39 +17,39 @@ public class FilmService {
     private final LikeStorage likeStorage;
 
     public Film findById(Integer filmId) {
-        log.info("Отправлен запрос к хранилищу на получение фильма по id {}", filmId);
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение фильма по id {}", filmId);
         return filmStorage.findById(filmId);
     }
 
     public Film addFilm(Film film) {
-        log.info("Отправлен запрос к хранилищу на добавление фильма с id {}", film.getId());
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление фильма с id {}", film.getId());
         return filmStorage.addFilm(film);
     }
 
     public Film updateFilm(Film film) {
-        log.info("Отправлен запрос к хранилищу на обновление фильма с id {}", film.getId());
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на обновление фильма с id {}", film.getId());
         return filmStorage.updateFilm(film);
     }
 
     public List<Film> findAll() {
-        log.info("Отправлен запрос к хранилищу на получение списка фильмов");
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка фильмов");
         return filmStorage.findAll();
     }
 
     public void addLike(Integer filmId, Integer userId) {
-        log.info("Отправлен запрос к хранилищу на добавление отметки \"like\" фильму с id {} от пользователя с id {} ",
-                filmId, userId);
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление отметки \"like\" " +
+                        "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
-        log.info("Отправлен запрос к хранилищу на удаление отметки \"like\" фильму с id {} от пользователя с id {} ",
-                filmId, userId);
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление отметки \"like\" " +
+                        "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.deleteLike(filmId, userId);
     }
 
     public List<Film> getPopularFilms(Integer limit) {
-        log.info("Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов", limit);
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов", limit);
         return filmStorage.getPopularFilms(limit);
     }
 }

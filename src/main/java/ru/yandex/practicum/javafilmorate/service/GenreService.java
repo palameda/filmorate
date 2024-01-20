@@ -15,12 +15,12 @@ public class GenreService {
     private final GenreStorage genreStorage;
 
     public Genre findById(int genreId) {
-        log.info("Отправлен запрос к хранилищу на получение жанра с id {}", genreId);
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение жанра с id {}", genreId);
         return genreStorage.findById(genreId);
     }
 
     public List<Genre> findAll() {
-        log.info("Отправлен запрос к хранилищу на получение списка рейтингов");
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка рейтингов");
         return genreStorage.findAll();
     }
 }

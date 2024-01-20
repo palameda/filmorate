@@ -23,7 +23,7 @@ public class FriendsDbStorage implements FriendStorage {
         isRegistered(friendId);
         String sqlQuery = "INSERT INTO FRIENDS (USER_ID, FRIEND_ID) VALUES (?, ?)";
         jdbcTemplate.update(sqlQuery, userId, friendId);
-        log.info("Пользователь с id {} получил запрос дружбы от пользователя с id {}", userId, friendId);
+        log.info(" ХРАНИЛИЩЕ: Пользователь с id {} получил запрос дружбы от пользователя с id {}", userId, friendId);
     }
 
     @Override
@@ -32,13 +32,13 @@ public class FriendsDbStorage implements FriendStorage {
         isRegistered(friendId);
         String sqlQuery = "DELETE FROM FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?";
         jdbcTemplate.update(sqlQuery, userId, friendId);
-        log.info("Пользователь с id {} удалил из друзей пользователя с id {}", userId, friendId);
+        log.info("ХРАНИЛИЩЕ: Пользователь с id {} удалил из друзей пользователя с id {}", userId, friendId);
     }
 
     @Override
     public List<User> getUserFriends(Integer userId) {
         isRegistered(userId);
-        log.info("Получение друзей пользователя с id {}", userId);
+        log.info("ХРАНИЛИЩЕ: Получение друзей пользователя с id {}", userId);
         String sqlQuery = "SELECT USERS.* FROM FRIENDS" +
                 " JOIN USERS ON FRIENDS.FRIEND_ID = USERS.USER_ID WHERE FRIENDS.USER_ID = ?";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> new User(
@@ -56,7 +56,7 @@ public class FriendsDbStorage implements FriendStorage {
     public List<User> getCommonsFriends(int userId, int friendId) {
         isRegistered(userId);
         isRegistered(friendId);
-        log.info("Получение общих друзей для пользователей с id {} и {}", userId, friendId);
+        log.info("ХРАНИЛИЩЕ: Получение общих друзей для пользователей с id {} и {}", userId, friendId);
         String sqlQuery = " SELECT * FROM USERS WHERE USER_ID IN ((SELECT TBL1.FRIEND_ID " +
                 " FROM (SELECT USER_ID, FRIEND_ID FROM FRIENDS WHERE USER_ID = ?) AS TBL1 " +
                 " INNER JOIN (SELECT USER_ID, FRIEND_ID FROM FRIENDS WHERE USER_ID = ?) AS TBL2 " +
@@ -72,7 +72,7 @@ public class FriendsDbStorage implements FriendStorage {
     }
 
     private void isRegistered(int userId) {
-        log.info("Проверка регистрации пользователя в системе");
+        log.info("ХРАНИЛИЩЕ: Проверка регистрации пользователя в системе");
         String sqlQuery = "SELECT * FROM USERS WHERE USER_ID = ?";
         SqlRowSet userRow = jdbcTemplate.queryForRowSet(sqlQuery, userId);
         if (!userRow.next()) {
