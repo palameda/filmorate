@@ -31,7 +31,7 @@ class GenreDbStorageTest {
         genres.add("Документальный");
         genres.add("Боевик");
         for (int i = 1; i < genres.size() - 1; i++) {
-            Assertions.assertEquals(genreDbStorage.findById(i), genres.get(i - 1), "Названия жанров не совпадают");
+            Assertions.assertEquals(genreDbStorage.findById(i).getName(), genres.get(i - 1), "Названия жанров не совпадают");
         }
     }
 

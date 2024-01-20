@@ -28,7 +28,7 @@ class MpaDbStorageTest {
         mpa.add("R");
         mpa.add("NC-17");
         for (int i = 1; i < mpa.size() - 1; i++) {
-            Assertions.assertEquals(mpaDbStorage.findById(i), mpa.get(i - 1), "Названия рейтингов не совпадают");
+            Assertions.assertEquals(mpaDbStorage.findById(i).getName(), mpa.get(i - 1), "Названия рейтингов не совпадают");
         }
     }
 
