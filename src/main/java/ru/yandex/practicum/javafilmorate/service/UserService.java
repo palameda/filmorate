@@ -16,12 +16,12 @@ public class UserService {
     private final UserStorage userStorage;
     private final FriendStorage friendStorage;
 
-    public User add(User user) {
+    public User addUser(User user) {
         log.info("Отправлен запрос к хранилищу на добавление пользователя {}", user.getName());
         return userStorage.addUser(user);
     }
 
-    public User update(User user) {
+    public User updateUser(User user) {
         log.info("Отправлен запрос к хранилищу на обновление пользователя {}", user.getName());
         return userStorage.updateUser(user);
     }
@@ -51,7 +51,7 @@ public class UserService {
         return friendStorage.getCommonsFriends(userId, friendId);
     }
 
-    public User getById(Integer userId) {
+    public User findById(Integer userId) {
         log.info("Отправлен запрос к хранилищу на получение пользователя по id {}", userId);
         return userStorage.findById(userId);
     }
