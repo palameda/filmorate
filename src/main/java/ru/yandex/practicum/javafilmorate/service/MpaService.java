@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.Mpa;
 import ru.yandex.practicum.javafilmorate.storage.dao.MpaStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -14,13 +15,13 @@ import java.util.List;
 public class MpaService {
     private final MpaStorage mpaStorage;
 
-    public Mpa getById(int id) {
-        log.info("Получен рейтинг по id {}", id);
-        return new Mpa(id, mpaStorage.findById(id));
+    public Mpa getById(int mpaId) {
+        log.info("Отправлен запрос к хранилищу на получение рейтинга с id {}", mpaId);
+        return mpaStorage.findById(mpaId);
     }
 
     public List<Mpa> getAll() {
-        log.info("Получен список рейтингов");
+        log.info("Отправлен запрос к хранилищу на получение списка рейтнгов");
         return mpaStorage.findAll();
     }
 }
