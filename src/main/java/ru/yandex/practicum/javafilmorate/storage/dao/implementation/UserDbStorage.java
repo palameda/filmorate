@@ -10,11 +10,7 @@ import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
