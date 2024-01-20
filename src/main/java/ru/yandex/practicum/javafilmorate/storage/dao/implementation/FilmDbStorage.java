@@ -44,7 +44,7 @@ public class FilmDbStorage implements FilmStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("FILMS")
                 .usingGeneratedKeyColumns("FILM_ID");
-        film.setId(simpleJdbcInsert.executeAndReturnKey(film.filmRowMap()).intValue());
+        film.setId(simpleJdbcInsert.executeAndReturnKey(film.filmToMap()).intValue());
         genreStorage.addFilmGenre(film);
         return findById(film.getId());
     }
@@ -99,9 +99,11 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getPopularFilms(int limit) {
         List<Film> films = new ArrayList<>();
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT F.*, COUNT(L.FILM_ID) FROM FILMS AS F " +
+        String sqlQuery = "SELECT F.*, COUNT(L.ID) FROM FILMS AS F " +
                 "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
-                "GROUP BY F.FILM_ID ORDER BY COUNT(L.FILM_ID) DESC LIMIT ?", limit);
+                "GROUP BY F.FILM_ID ORDER BY COUNT(L.ID) DESC LIMIT ?";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, limit);
+        System.out.println(rs);
         while (rs.next()) {
             films.add(filmRowMap(rs));
         }
