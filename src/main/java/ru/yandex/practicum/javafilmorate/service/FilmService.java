@@ -4,104 +4,52 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.Film;
-import ru.yandex.practicum.javafilmorate.model.Genre;
 import ru.yandex.practicum.javafilmorate.storage.dao.FilmStorage;
-import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
+import ru.yandex.practicum.javafilmorate.storage.dao.LikeStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class FilmService {
-    private static final int RIGHT_ID_BOUNDARY = 9900;
     private final FilmStorage filmStorage;
-    private final MpaService mpaService;
-    private final GenreService genreService;
+    private final LikeStorage likeStorage;
 
-    public Film getById(Integer filmId) {
-        if (filmId < RIGHT_ID_BOUNDARY) {
-            Film film = filmStorage.findById(filmId).orElseThrow(
-                    () -> new UnregisteredDataException("Фильм не зарегестрирован в системе")
-            );
-            film.setGenres(genreService.getFilmGenres(film.getId()));
-            log.info("Получен фильм с id {}", film);
-            return film;
-        } else {
-            throw new UnregisteredDataException("Фильм не зарегестрирован в системе");
-        }
+    public Film findById(Integer filmId) {
+        log.info("Отправлен запрос к хранилищу на получение фильма по id {}", filmId);
+        return filmStorage.findById(filmId);
     }
 
-    public Film add(Film film) {
-        film.setId(filmStorage.add(film));
-        film.setMpa(mpaService.getById(film.getMpa().getId()));
-        List<Genre> genres = new ArrayList<>();
-        for (Genre genre : film.getGenres()) {
-            genres.add(genreService.getById(genre.getId()));
-            if (!filmStorage.setGenre(film.getId(), genre.getId())) {
-                throw new UnregisteredDataException("Добавить жанр фильму не удалось");
-            }
-        }
-        film.setGenres(genres);
-        log.info("Фильм {} добавлен в хранилище", film.getName());
-        return film;
+    public Film addFilm(Film film) {
+        log.info("Отправлен запрос к хранилищу на добавление фильма {}", film.getName());
+        return filmStorage.addFilm(film);
     }
 
-    public void update(Film film) {
-        getById(film.getId());
-        filmStorage.update(film);
-        film.setMpa(mpaService.getById(film.getMpa().getId()));
-        List<Genre> genres = new ArrayList<>();
-        for (Genre genre : film.getGenres()) {
-            if (!genres.contains(genreService.getById(genre.getId()))) {
-                genres.add(genreService.getById(genre.getId()));
-            }
-            if (!filmStorage.setGenre(film.getId(), genre.getId())) {
-                throw new UnregisteredDataException("Изменить жанр фильму не удалось");
-            }
-        }
-        List<Genre> filmGenres = genreService.getFilmGenres(film.getId());
-        for (Genre genre : filmGenres) {
-            if (!genres.contains(genre)) {
-                filmStorage.deleteGenre(film.getId(), genre.getId());
-            }
-        }
-        film.setGenres(genres);
-        log.info("Фильм {} обновлён", film.getName());
+    public Film update(Film film) {
+        log.info("Отправлен запрос к хранилищу на обновление фильма {}", film.getName());
+        return filmStorage.updateFilm(film);
     }
 
-    public List<Film> getAll() {
-        List<Film> films = filmStorage.findAll();
-        for (Film film : films) {
-            film.setGenres(genreService.getFilmGenres(film.getId()));
-        }
-        log.info("Список фильмов получен");
-        return films;
+    public List<Film> findAll() {
+        log.info("Отправлен запрос к хранилищу на получение списка фильмов");
+        return filmStorage.findAll();
     }
 
     public void addLike(Integer filmId, Integer userId) {
-        validateId(userId);
-        if (!filmStorage.addLike(filmId, userId)) {
-            throw new UnregisteredDataException("Не удалось поставить отметку \"нравится\"");
-        }
+        log.info("Отправлен запрос к хранилищу на добавление отметки \"like\" фильму с id {} от пользователя с id {} ",
+                filmId, userId);
+        likeStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
-        validateId(userId);
-        if (!filmStorage.deleteLike(filmId, userId)) {
-            throw new UnregisteredDataException("Не удалось удалить отметку \"нравится\"");
-        }
+        log.info("Отправлен запрос к хранилищу на удаление отметки \"like\" фильму с id {} от пользователя с id {} ",
+                filmId, userId);
+        likeStorage.deleteLike(filmId, userId);
     }
 
     public List<Film> getPopularFilms(Integer limit) {
-        log.info("Получен список из {} самых популярных фильмов", limit);
-        return filmStorage.mostPopulars(limit);
-    }
-
-    private void validateId(Integer userId) {
-        if (userId < 1) {
-            throw new UnregisteredDataException("id пользователя не может быть отрицательным");
-        }
+        log.info("Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов", limit);
+        return filmStorage.getPopularFilms(limit);
     }
 }
