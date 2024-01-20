@@ -18,9 +18,10 @@ import ru.yandex.practicum.javafilmorate.storage.dao.implementation.GenreDbStora
 import ru.yandex.practicum.javafilmorate.storage.dao.implementation.UserDbStorage;
 
 import java.time.LocalDate;
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SpringBootTest(classes = JavaFilmorateApplication.class)
 @AutoConfigureTestDatabase
