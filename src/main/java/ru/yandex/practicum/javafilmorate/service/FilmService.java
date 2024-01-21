@@ -1,23 +1,55 @@
 package ru.yandex.practicum.javafilmorate.service;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.Film;
+import ru.yandex.practicum.javafilmorate.storage.dao.FilmStorage;
+import ru.yandex.practicum.javafilmorate.storage.dao.LikeStorage;
 
 import java.util.List;
 
-public interface FilmService {
-    Film addFilm(Film film);
+@Slf4j
+@Service
+@AllArgsConstructor
+public class FilmService {
+    private final FilmStorage filmStorage;
+    private final LikeStorage likeStorage;
 
-    Film updateFilm(Film film);
+    public Film findById(Integer filmId) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение фильма по id {}", filmId);
+        return filmStorage.findById(filmId);
+    }
 
-    void deleteFilm(Film film);
+    public Film addFilm(Film film) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление фильма с id {}", film.getId());
+        return filmStorage.addFilm(film);
+    }
 
-    Film getFilmById(int id);
+    public Film updateFilm(Film film) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на обновление фильма с id {}", film.getId());
+        return filmStorage.updateFilm(film);
+    }
 
-    List<Film> getFilms();
+    public List<Film> findAll() {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка фильмов");
+        return filmStorage.findAll();
+    }
 
-    void addLike(int id, int userId);
+    public void addLike(Integer filmId, Integer userId) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление отметки \"like\" " +
+                        "фильму с id {} от пользователя с id {} ", filmId, userId);
+        likeStorage.addLike(filmId, userId);
+    }
 
-    void deleteLike(int id, int userId);
+    public void deleteLike(Integer filmId, Integer userId) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление отметки \"like\" " +
+                        "фильму с id {} от пользователя с id {} ", filmId, userId);
+        likeStorage.deleteLike(filmId, userId);
+    }
 
-    List<Film> getPopularFilms(String count);
+    public List<Film> getPopularFilms(Integer limit) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов", limit);
+        return filmStorage.getPopularFilms(limit);
+    }
 }

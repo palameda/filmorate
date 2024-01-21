@@ -1,17 +1,22 @@
 package ru.yandex.practicum.javafilmorate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
 public class User {
-    private int id;
+    private Integer id;
     @Email(message = "Передан некорректный e-mail адрес")
     private String email;
     @NotBlank(message = "Поле login не должно быть пустым")
@@ -19,12 +24,14 @@ public class User {
     private String name;
     @Past(message = "Дата рождения пользователя не может быть в будущем")
     private final LocalDate birthday;
-    private final Set<Integer> friends = new HashSet<>();
+    private Set<Integer> friends;
 
-    public User(String email, String login, String name, LocalDate birthday) {
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
+    public Map<String, Object> userRowMap() {
+        Map<String, Object> userRow = new HashMap<>();
+        userRow.put("USER_EMAIL", email);
+        userRow.put("USER_LOGIN", login);
+        userRow.put("USER_NAME", name);
+        userRow.put("USER_BIRTHDAY", birthday);
+        return userRow;
     }
 }
