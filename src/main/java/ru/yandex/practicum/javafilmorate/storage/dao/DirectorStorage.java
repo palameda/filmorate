@@ -4,7 +4,7 @@ import ru.yandex.practicum.javafilmorate.model.Director;
 
 import java.util.List;
 
-public interface DirectorDbStorage {
+public interface DirectorStorage {
 
     List<Director> findAll();
 
