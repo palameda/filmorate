@@ -26,6 +26,7 @@ public class Film {
     private final Mpa mpa;
     private final int likes;
     private Set<Genre> genres = new HashSet<>();
+    private Set<Director> directors = new HashSet<>();
 
     public Film(Integer id, String name, String description, LocalDate releaseDate,
                 Integer duration, Mpa mpa, int likes) {
