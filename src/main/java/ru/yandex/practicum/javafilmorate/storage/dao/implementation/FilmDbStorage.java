@@ -196,4 +196,37 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
     }
+
+    @Override
+    public List<Film> commonFilms(int userId, int friendId) {
+        log.info("ХРАНИЛИЩЕ: Получение списка общих фильмов пользователя id={} " +
+                " и его друга id={} отсортированных по популярности.", userId, friendId);
+
+        String sqlQuery = "SELECT t.*        \n" +
+                "            FROM (SELECT f.*, \n" +
+                "                         count(f.film_id) likes\n" +
+                "                    FROM Films f\n" +
+                "                   INNER JOIN LIKES l ON l.film_id = f.film_id  \n" +
+                "                   GROUP BY (f.film_id)) t\n" +
+                "           INNER JOIN LIKES l2 ON l2.film_id = t.film_id AND l2.user_id=?\n" +
+                "          INTERSECT\n" +
+                "          SELECT t.*        \n" +
+                "            FROM (SELECT f.*, \n" +
+                "                         count(f.film_id) likes\n" +
+                "                    FROM Films f\n" +
+                "                   INNER JOIN LIKES l ON l.film_id = f.film_id  \n" +
+                "                   GROUP BY (f.film_id)) t\n" +
+                "           INNER JOIN LIKES l2 ON l2.film_id = t.film_id AND l2.user_id=? \n" +
+                "          ORDER BY likes DESC; ";
+
+        List<Film> films = new ArrayList<>();
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, userId, friendId);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+
+        return films;
+    }
+
+
 }

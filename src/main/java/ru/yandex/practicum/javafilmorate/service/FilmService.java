@@ -38,13 +38,13 @@ public class FilmService {
 
     public void addLike(Integer filmId, Integer userId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление отметки \"like\" " +
-                        "фильму с id {} от пользователя с id {} ", filmId, userId);
+                "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление отметки \"like\" " +
-                        "фильму с id {} от пользователя с id {} ", filmId, userId);
+                "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.deleteLike(filmId, userId);
     }
 
@@ -52,4 +52,12 @@ public class FilmService {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов", limit);
         return filmStorage.getPopularFilms(limit);
     }
+
+    public List<Film> commonFilms(int userId, int friendId) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка общих фильмов пользователя {} " +
+                "и его друга {}.", userId, friendId);
+        return filmStorage.commonFilms(userId, friendId);
+    }
+
+
 }
