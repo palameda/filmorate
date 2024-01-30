@@ -35,8 +35,7 @@ public class ReviewDaoImpl implements ReviewDao {
         try {
             review.setReviewId(simpleJdbcInsert.executeAndReturnKey(params).intValue());
             return review;
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new UnregisteredDataException("Определен несуществующий пользователь или фильм");
         }
     }
