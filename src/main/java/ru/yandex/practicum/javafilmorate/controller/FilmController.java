@@ -35,6 +35,13 @@ public class FilmController {
         return filmService.findAll();
     }
 
+    @GetMapping(value = "/popular", params = {"count", "genreId", "year"})
+    public List<Film> getPopularByGenreAndYear(@RequestParam(defaultValue = "10") Integer count,
+                                        @RequestParam Integer genreId, @RequestParam Integer year) {
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/popular params = {count, genreId, year}");
+        return filmService.getPopularByGenreAndYear(count, genreId, year);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Film addFilm(@Valid @RequestBody Film film) {

@@ -52,4 +52,8 @@ public class FilmService {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов", limit);
         return filmStorage.getPopularFilms(limit);
     }
+
+    public List<Film> getPopularByGenreAndYear(Integer count, Integer genreId, Integer year) {
+        return filmStorage.getPopularByGenreAndYear(count, genreId, year);
+    }
 }

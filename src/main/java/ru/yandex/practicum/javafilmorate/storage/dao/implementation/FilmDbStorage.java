@@ -111,6 +111,23 @@ public class FilmDbStorage implements FilmStorage {
         return films;
     }
 
+    @Override
+    public List<Film> getPopularByGenreAndYear(int count, int genreId, int year) {
+        List<Film> films = new ArrayList<>();
+        String sqlQuery = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                "LEFT JOIN FILM_GENRES AS FG ON F.FILM_ID = FG.FILM_ID " +
+                "WHERE FG.GENRE_ID = ? AND YEAR(F.FILM_RELEASE_DATE) = ? " +
+                "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC LIMIT ?";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, genreId, year, count);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+        log.info("ХРАНИЛИЩЕ: Получение списка {} самых популярных фильмов с id жанра {} и годом релиза {}", count,
+                genreId, year);
+        return films;
+    }
+
     private Film filmRowMap(SqlRowSet rs) {
         log.info("ХРАНИЛИЩЕ: Производится маппинг фильма");
         Film film = new Film(
