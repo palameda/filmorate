@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @Data
@@ -17,10 +16,8 @@ public class Review {
     private final String content;
     @NonNull
     private final Boolean isPositive;
-    //@PositiveOrZero(message = "Идентификатор пользователя не может быть отрицательным")
     @NonNull
     private final Integer userId;
-    //@PositiveOrZero(message = "Идентификатор фильма не может быть отрицательным")
     @NonNull
     private final Integer filmId;
     private int useful;
