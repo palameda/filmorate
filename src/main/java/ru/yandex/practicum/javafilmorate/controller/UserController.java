@@ -63,4 +63,12 @@ public class UserController {
         log.info("КОНТРОЛЛЕР: DELETE-запрос по эндпоинту /users/{}/friends/{}", id, friendId);
         userService.deleteFriend(id, friendId);
     }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable int userId) {
+        log.info("КОНТРОЛЛЕР: DELETE-запрос по эндпоинту /{}", userId);
+        userService.deleteUser(userId);
+    }
+
+
 }
