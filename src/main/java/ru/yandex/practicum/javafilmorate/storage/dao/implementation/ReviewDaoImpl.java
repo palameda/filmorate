@@ -1,5 +1,6 @@
 package ru.yandex.practicum.javafilmorate.storage.dao.implementation;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class ReviewDaoImpl implements ReviewDao {
     private final JdbcTemplate jdbcTemplate;
@@ -27,6 +29,8 @@ public class ReviewDaoImpl implements ReviewDao {
 
     @Override
     public Review add(Review review) {
+        log.info("ХРАНИЛИЩЕ: Добавление отзыва в хранилище от пользователя с id {} на фильм с id {}",
+                review.getUserId(), review.getFilmId());
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(Objects.requireNonNull(jdbcTemplate.getDataSource()))
                 .withTableName("reviews")
                 .usingGeneratedKeyColumns("ID");
@@ -42,6 +46,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
     @Override
     public Review update(Review review) {
+        log.info("ХРАНИЛИЩЕ: Обновление данных по отзыву с id {}", review.getReviewId());
         jdbcTemplate.update("UPDATE reviews SET CONTENT = ?,  IS_POSITIVE = ? WHERE ID = ?",
                 review.getContent(), review.getIsPositive(), review.getReviewId());
         return findReviewByID(review.getReviewId());
@@ -49,12 +54,14 @@ public class ReviewDaoImpl implements ReviewDao {
 
     @Override
     public void updateUseful(Review review) {
+        log.info("ХРАНИЛИЩЕ: Обновление данных о полезности отзыва с id {}", review.getReviewId());
         jdbcTemplate.update("UPDATE reviews SET USEFUL = ?  WHERE ID = ?",
                 review.getUseful(), review.getReviewId());
     }
 
     @Override
     public List<Review> findAllReviews(int count) {
+        log.info("ХРАНИЛИЩЕ: Получение списка {} самых полезных отзывов", count);
         return jdbcTemplate.query("SELECT * FROM reviews", (rs, rowNum) -> makeReviewForList(rs))
                 .stream()
                 .sorted(Comparator.comparingInt(Review::getUseful).reversed())
@@ -64,6 +71,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
     @Override
     public List<Review> findReviewsByFilmID(int filmID, int count) {
+        log.info("ХРАНИЛИЩЕ: Получение списка {} самых полезных отзывов на фильм с id {}", count, filmID);
         return jdbcTemplate.query("SELECT * FROM reviews WHERE FILM_ID = ?", (rs, rowNum) -> makeReviewForList(rs), filmID)
                 .stream()
                 .sorted(Comparator.comparingInt(Review::getUseful).reversed())
@@ -73,11 +81,13 @@ public class ReviewDaoImpl implements ReviewDao {
 
     @Override
     public Review findReviewByID(int reviewID) {
+        log.info("ХРАНИЛИЩЕ: Получение отзыва по id {}", reviewID);
         return makeReview(jdbcTemplate.queryForRowSet("SELECT * FROM reviews WHERE ID = ? LIMIT 1", reviewID));
     }
 
     @Override
     public void removeReview(int reviewID) {
+        log.info("ХРАНИЛИЩЕ: Удаление из хранилища отзыва с id {}", reviewID);
         jdbcTemplate.update("DELETE FROM reviews WHERE ID = ?", reviewID);
     }
 
