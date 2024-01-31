@@ -64,7 +64,7 @@ public class DirectorDbStorage implements DirectorStorage {
     @Override
     public Director updateDirector(Director director) {
         log.info("ХРАНИЛИЩЕ: Обновление режиссёра с id {}", director.getId());
-        if (director.getId() == null) {
+        if (findById(director.getId()) == null) {
             throw new UnregisteredDataException("При обновлении данных передан режиссёр без id");
         }
         String sqlQuery = "UPDATE DIRECTORS SET DIRECTOR_NAME = ? WHERE DIRECTOR_ID = ?";
