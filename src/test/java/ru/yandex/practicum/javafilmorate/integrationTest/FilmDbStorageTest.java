@@ -27,9 +27,8 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 public class FilmDbStorageTest {
 
     private final FilmDbStorage filmStorage;
-    final GenreDbStorage genreStorage;
-    final LikesDbStorage likesDbStorage;
-    final UserDbStorage userDbStorage;
+    private final LikesDbStorage likesDbStorage;
+    private final UserDbStorage userDbStorage;
     private int film1Id, film2Id, film3Id;
     private int user1Id, user2Id, user3Id;
 
@@ -98,11 +97,11 @@ public class FilmDbStorageTest {
 
         /*Проверяем размер полученного списка*/
         List<Film> current = filmStorage.commonFilms(user1Id, user2Id);
-        Assertions.assertEquals(2, current.size(), "Количество фильмов не совпадает");
+        Assertions.assertEquals(2, current.size(), "Количество фильмов не совпадает.");
 
         /*Проверяем порядок элементов в списке.*/
         /*Первым должен быть фильм с id=2 т.к. у него три лайка*/
-        Assertions.assertEquals(2, current.get(0).getId());
-        Assertions.assertEquals(1, current.get(1).getId());
+        Assertions.assertEquals(2, current.get(0).getId(),"Первым д.б. фильм с id=2 т.к. у него три лайка.");
+        Assertions.assertEquals(1, current.get(1).getId(),"Первым д.б. фильм с id=1 т.к. у него два лайка.");
     }
 }
