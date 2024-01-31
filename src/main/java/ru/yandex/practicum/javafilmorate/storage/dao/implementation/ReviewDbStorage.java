@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.javafilmorate.model.Review;
-import ru.yandex.practicum.javafilmorate.storage.dao.ReviewDao;
+import ru.yandex.practicum.javafilmorate.storage.dao.ReviewStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
 import java.sql.ResultSet;
@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class ReviewDaoImpl implements ReviewDao {
+public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    public ReviewDaoImpl(JdbcTemplate jdbcTemplate) {
+    public ReviewDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
