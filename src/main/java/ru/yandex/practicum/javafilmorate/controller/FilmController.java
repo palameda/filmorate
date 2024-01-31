@@ -59,4 +59,10 @@ public class FilmController {
         log.info("КОНТРОЛЛЕР: DELETE-запрос по эндпоинту /films/{}/like/{}", id, userId);
         filmService.deleteLike(id, userId);
     }
+
+    @DeleteMapping("/{filmId}")
+    public void deleteFilm(@PathVariable int filmId) {
+        log.info("КОНТРОЛЛЕР: DELETE-запрос по эндпоинту /{}", filmId);
+        filmService.deleteFilm(filmId);
+    }
 }

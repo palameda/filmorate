@@ -73,15 +73,10 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(int filmId) {
+    public boolean deleteFilm(int filmId) {
         log.info("ХРАНИЛИЩЕ: Удаление из хранилища фильма с id {}", filmId);
-        if (filmId == 0) {
-            throw new UnregisteredDataException("Фильм с id " + filmId + " не зарегистрирован в системе");
-        }
         String sqlQuery = "DELETE FROM FILMS WHERE FILM_ID = ? ";
-        if (jdbcTemplate.update(sqlQuery, filmId) == 0) {
-            throw new UnregisteredDataException("Фильм с id " + filmId + " не зарегистрирован в системе");
-        }
+        return jdbcTemplate.update(sqlQuery, filmId) > 0;
     }
 
     @Override
