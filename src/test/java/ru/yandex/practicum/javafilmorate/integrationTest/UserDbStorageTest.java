@@ -101,6 +101,14 @@ class UserDbStorageTest {
                 190, new Mpa(2, "PG"), 0);
         filmDbStorage.addFilm(film3);
         int film3Id = film3.getId();
+        Film film4 = new Film(null, "Film4", "Description4", LocalDate.parse("1980-01-01"),
+                190, new Mpa(2, "PG"), 0);
+        filmDbStorage.addFilm(film4);
+        int film4Id = film4.getId();
+        Film film5 = new Film(null, "Film5", "Description5", LocalDate.parse("1985-01-01"),
+                190, new Mpa(2, "PG"), 0);
+        filmDbStorage.addFilm(film5);
+        int film5Id = film5.getId();
 
         int user1Id = firstUser.getId();
         int user2Id = secontUser.getId();
@@ -109,14 +117,17 @@ class UserDbStorageTest {
         likeStorage.addLike(film1Id, user1Id);
         likeStorage.addLike(film2Id, user1Id);
         likeStorage.addLike(film3Id, user1Id);
+        likeStorage.addLike(film5Id, user1Id);
 
         likeStorage.addLike(film1Id, user2Id);
         likeStorage.addLike(film2Id, user2Id);
 
         likeStorage.addLike(film1Id, user3Id);
+        likeStorage.addLike(film4Id, user3Id);
         /* Рекомендация фильмов должна состоять из списка одного фильма с Id 3*/
         List<Film> films = userService.findRecommendationsForUser(user2Id);
-        assertThat(films.size()).isEqualTo(1);
+        assertThat(films.size()).isEqualTo(2);
         assertThat(films.get(0).getId()).isEqualTo(3);
+        assertThat(films.get(1).getId()).isEqualTo(5);
     }
 }
