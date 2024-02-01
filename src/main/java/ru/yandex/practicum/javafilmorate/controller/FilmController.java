@@ -65,4 +65,12 @@ public class FilmController {
         log.info("КОНТРОЛЛЕР: DELETE-запрос по эндпоинту /{}", filmId);
         filmService.deleteFilm(filmId);
     }
+
+    @GetMapping("/common")
+    public List<Film> commonFilms(@RequestParam int userId, @RequestParam int friendId) {
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/common?userId={}&friendId={}", userId, friendId);
+        return filmService.commonFilms(userId, friendId);
+    }
+
+
 }
