@@ -102,14 +102,8 @@ class UserDbStorageTest {
         filmDbStorage.addFilm(film3);
         int film3Id = film3.getId();
 
-        User firstUser = new User(1, "email@yandex.ru", "Login1", "Name1", LocalDate.parse("1970-01-01"), null);
-        userDbStorage.addUser(firstUser);
         int user1Id = firstUser.getId();
-        User secontUser = new User(1, "email@gmail.com", "Login2", "Name2", LocalDate.parse("1980-01-01"), null);
-        userDbStorage.addUser(secontUser);
         int user2Id = secontUser.getId();
-        User thirdUser = new User(3, "email@gmail.com", "Login3", "Name3", LocalDate.parse("1990-01-01"), null);
-        userDbStorage.addUser(thirdUser);
         int user3Id = thirdUser.getId();
 
         likeStorage.addLike(film1Id, user1Id);
