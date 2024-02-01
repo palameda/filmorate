@@ -35,6 +35,12 @@ public class FilmController {
         return filmService.findAll();
     }
 
+    @GetMapping("/director/{directorId}")
+    public List<Film> findDirectorFilmsByYearOrLikes(@PathVariable Integer directorId, @RequestParam String sortBy) {
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/director/{directorId}");
+        return filmService.findDirectorFilmsByYearOrLikes(directorId, sortBy);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Film addFilm(@Valid @RequestBody Film film) {
