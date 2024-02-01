@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.javafilmorate.JavaFilmorateApplication;
-import ru.yandex.practicum.javafilmorate.model.User;;
+import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.storage.dao.implementation.UserDbStorage;
 
 import java.time.LocalDate;
