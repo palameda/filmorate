@@ -116,12 +116,12 @@ public class FilmDbStorage implements FilmStorage {
         directorStorage.findById(directorId); // проверка директора на существование
         String sql;
         List<Film> films = new ArrayList<>();
-        if (sortBy.equals("year")) {
+        if (sortBy.equalsIgnoreCase("year")) {
             sql = "SELECT F.* FROM FILMS AS F " +
                     "JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
                     "WHERE FD.DIRECTOR_ID = " + directorId +
                     " ORDER BY F.FILM_RELEASE_DATE";
-        } else if (sortBy.equals("likes")) {
+        } else if (sortBy.equalsIgnoreCase("likes")) {
             sql = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
                     "JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
                     "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
