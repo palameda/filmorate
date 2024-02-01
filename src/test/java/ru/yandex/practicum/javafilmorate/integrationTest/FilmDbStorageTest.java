@@ -10,10 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.javafilmorate.JavaFilmorateApplication;
-import ru.yandex.practicum.javafilmorate.model.Director;
-import ru.yandex.practicum.javafilmorate.model.Film;
-import ru.yandex.practicum.javafilmorate.model.Mpa;
-import ru.yandex.practicum.javafilmorate.model.User;
+import ru.yandex.practicum.javafilmorate.model.*;
 import ru.yandex.practicum.javafilmorate.storage.dao.DirectorStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.implementation.*;
 
@@ -116,7 +113,7 @@ public class FilmDbStorageTest {
         Assertions.assertEquals(2, current.size(), "Количество film не совпадает.");
 
         Film[] expect = new Film[]{film1, film3};
-        Assertions.assertArrayEquals(expect, current.toArray(),"Удален не тот film.");
+        Assertions.assertArrayEquals(expect, current.toArray(), "Удален не тот film.");
     }
 
     @Test
@@ -134,7 +131,7 @@ public class FilmDbStorageTest {
         filmStorage.updateFilm(film3);
         //получение списка фильмов, отсортированного по году
         List<Film> filmsByYear = filmStorage.findDirectorFilmsByYearOrLikes(director.getId(), "year");
-        Assertions.assertEquals(filmsByYear.size(),2, "Количество фильмов не совпадает");
+        Assertions.assertEquals(filmsByYear.size(), 2, "Количество фильмов не совпадает");
         Assertions.assertEquals(filmsByYear.get(0).getId(), film1.getId(), "Фильмы не отсортированы");
         Assertions.assertEquals(filmsByYear.get(1).getId(), film2.getId(), "Фильмы не отсортированы");
         Assertions.assertEquals(filmsByYear.get(0).getReleaseDate().toString(), "1970-01-01", "Даты не совпадают");
@@ -162,10 +159,100 @@ public class FilmDbStorageTest {
         likesDbStorage.addLike(thirdUser.getId(), film3.getId());
         //получение списка фильмов, отсортированного по лайкам
         List<Film> filmsByLikes = filmStorage.findDirectorFilmsByYearOrLikes(director.getId(), "likes");
-        Assertions.assertEquals(filmsByLikes.size(),2, "Количество фильмов не совпадает");
+        Assertions.assertEquals(filmsByLikes.size(), 2, "Количество фильмов не совпадает");
         Assertions.assertEquals(filmsByLikes.get(0).getId(), film1.getId(), "Фильмы не отсортированы");
         Assertions.assertEquals(filmsByLikes.get(1).getId(), film2.getId(), "Фильмы не отсортированы");
     }
+
+    @Test
+    @DisplayName("Проверка метода getPopularByGenre")
+    void testGetPopularByGenre() {
+        // Добавляем жанры всем фильмам
+        Film film3 = filmStorage.findById(film3Id);
+        film3.setGenres(Set.of(new Genre(1, "Комедия")));
+        filmStorage.updateFilm(film3);
+
+        Film film2 = filmStorage.findById(film2Id);
+        film2.setGenres(Set.of(new Genre(1, "Комедия")));
+        filmStorage.updateFilm(film2);
+
+        Film film1 = filmStorage.findById(film1Id);
+        film1.setGenres(Set.of(new Genre(2, "Драма")));
+        filmStorage.updateFilm(film1);
+
+        likesDbStorage.addLike(film1Id, user1Id);
+        likesDbStorage.addLike(film1Id, user2Id);
+        likesDbStorage.addLike(film2Id, user1Id);
+        likesDbStorage.addLike(film2Id, user2Id);
+        likesDbStorage.addLike(film3Id, user1Id);
+        likesDbStorage.addLike(film3Id, user2Id);
+        likesDbStorage.addLike(film3Id, user3Id);
+
+        Assertions.assertEquals(List.of(filmStorage.findById(film3Id)), filmStorage.getPopularByGenre(1, 1),
+                "Должен выдать только filmId3");
+        Assertions.assertEquals(List.of(filmStorage.findById(film3Id), filmStorage.findById(film2Id)),
+                filmStorage.getPopularByGenre(10, 1), "Должен выдать фильмы filmId3, filmId2, " +
+                        "в этом порядке");
+        Assertions.assertEquals(List.of(filmStorage.findById(1)),
+                filmStorage.getPopularByGenre(10, 2), "Должен выдать filmId1");
+    }
+
+    @Test
+    @DisplayName(("Проверка метода getPopularByYear"))
+    void testGetPopularByYear() {
+        Film film4 = new Film(null, "Film4", "Description4", LocalDate.parse("1990-10-01"),
+                140, new Mpa(1, "G"), 0);
+        film4.setGenres(Set.of(new Genre(2, "Драма")));
+        filmStorage.addFilm(film4);
+        int film4Id = film4.getId();
+
+        likesDbStorage.addLike(film1Id, user1Id);
+        likesDbStorage.addLike(film1Id, user2Id);
+        likesDbStorage.addLike(film2Id, user1Id);
+        likesDbStorage.addLike(film2Id, user2Id);
+        likesDbStorage.addLike(film4Id, user1Id);
+        likesDbStorage.addLike(film4Id, user2Id);
+        likesDbStorage.addLike(film4Id, user3Id);
+
+        Assertions.assertEquals(List.of(filmStorage.findById(film4Id)), filmStorage.getPopularByYear(1, 1990),
+                "Должен выдать только фильм film4Id");
+        Assertions.assertEquals(List.of(filmStorage.findById(film4Id), filmStorage.findById(film3Id)),
+                filmStorage.getPopularByYear(10, 1990), "Должен выдать фильмы film4Id и film3Id");
+        Assertions.assertEquals(List.of(filmStorage.findById(1)),
+                filmStorage.getPopularByYear(10, 1970), "Должен выдать filmId1");
+    }
+
+    @Test
+    @DisplayName("Проверка метода getPopularByGenreAndYear")
+    void testGetPopularByGenreAndYear() {
+        Film film4 = new Film(null, "Film4", "Description4", LocalDate.parse("1990-10-01"),
+                140, new Mpa(1, "G"), 0);
+        film4.setGenres(Set.of(new Genre(2, "Драма")));
+        filmStorage.addFilm(film4);
+        int film4Id = film4.getId();
+
+        Film film5 = new Film(null, "Film5", "Description5", LocalDate.parse("1990-10-10"),
+                140, new Mpa(1, "G"), 0);
+        film5.setGenres(Set.of(new Genre(2, "Драма")));
+        filmStorage.addFilm(film5);
+        int film5Id = film5.getId();
+
+        Film film3 = filmStorage.findById(film3Id);
+        film3.setGenres(Set.of(new Genre(1, "Комедия")));
+        filmStorage.updateFilm(film3);
+
+        likesDbStorage.addLike(film3Id, user1Id);
+        likesDbStorage.addLike(film4Id, user1Id);
+        likesDbStorage.addLike(film4Id, user2Id);
+        likesDbStorage.addLike(film5Id, user1Id);
+        likesDbStorage.addLike(film5Id, user2Id);
+        likesDbStorage.addLike(film5Id, user3Id);
+
+        Assertions.assertEquals(List.of(filmStorage.findById(film5Id)),
+                filmStorage.getPopularByGenreAndYear(1, 2, 1990),
+                "в списке должен быть только film5");
+        Assertions.assertEquals(List.of(filmStorage.findById(film5Id), filmStorage.findById(film4Id)),
+                filmStorage.getPopularByGenreAndYear(10, 2, 1990),
+                "в списке должны быть фильмы film5 и film4");
+    }
 }
-
-

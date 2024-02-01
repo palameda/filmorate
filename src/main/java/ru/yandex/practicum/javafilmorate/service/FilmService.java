@@ -39,13 +39,13 @@ public class FilmService {
 
     public void addLike(Integer filmId, Integer userId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление отметки \"like\" " +
-                        "фильму с id {} от пользователя с id {} ", filmId, userId);
+                "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление отметки \"like\" " +
-                        "фильму с id {} от пользователя с id {} ", filmId, userId);
+                "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.deleteLike(filmId, userId);
     }
 
@@ -63,6 +63,24 @@ public class FilmService {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка общих фильмов пользователя {} " +
                 "и его друга {}.", userId, friendId);
         return filmStorage.commonFilms(userId, friendId);
+    }
+
+    public List<Film> getPopularByGenre(int count, int genreId) {
+        log.info("СЕРВИС: СЕРВИС: Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов в жанре " +
+                "{}.", count, genreId);
+        return filmStorage.getPopularByGenre(count, genreId);
+    }
+
+    public List<Film> getPopularByYear(int count, int year) {
+        log.info("СЕРВИС: СЕРВИС: Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов," +
+                " выпущенных в {} году.", count, year);
+        return filmStorage.getPopularByYear(count, year);
+    }
+
+    public List<Film> getPopularByGenreAndYear(int count, int genreId, int year) {
+        log.info("СЕРВИС: СЕРВИС: Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов в жанре " +
+                "{}, выпущенных в {} году.", count, genreId, year);
+        return filmStorage.getPopularByGenreAndYear(count, genreId, year);
     }
 
     public List<Film> findDirectorFilmsByYearOrLikes(int directorId, String sortBy) {
