@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.storage.dao.FilmStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.LikeStorage;
+import ru.yandex.practicum.javafilmorate.utils.CheckUtil;
 
 import java.util.List;
 
@@ -38,19 +39,24 @@ public class FilmService {
 
     public void addLike(Integer filmId, Integer userId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление отметки \"like\" " +
-                "фильму с id {} от пользователя с id {} ", filmId, userId);
+                        "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление отметки \"like\" " +
-                "фильму с id {} от пользователя с id {} ", filmId, userId);
+                        "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.deleteLike(filmId, userId);
     }
 
     public List<Film> getPopularFilms(Integer limit) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка {} самых популярных фильмов", limit);
         return filmStorage.getPopularFilms(limit);
+    }
+
+    public void deleteFilm(int filmId) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление фильма с Id={}.", filmId);
+        CheckUtil.checkNotFound(filmStorage.deleteFilm(filmId), " фильм с Id=" + filmId);
     }
 
     public List<Film> commonFilms(int userId, int friendId) {

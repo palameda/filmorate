@@ -29,33 +29,31 @@ public class FilmDbStorageTest {
     private final FilmDbStorage filmStorage;
     private final LikesDbStorage likesDbStorage;
     private final UserDbStorage userDbStorage;
+    private final Film film1 = new Film(null, "Film1", "Description1", LocalDate.parse("1970-01-01"),
+            140, new Mpa(1, "G"), 0);
+    private final Film film2 = new Film(null, "Film2", "Description2", LocalDate.parse("1980-01-01"),
+            90, new Mpa(2, "PG"), 0);
+    private final Film film3 = new Film(null, "Film3", "Description3", LocalDate.parse("1990-01-01"),
+            190, new Mpa(2, "PG"), 0);
+    private final User firstUser = new User(1, "email@yandex.ru", "Login1", "Name1", LocalDate.parse("1970-01-01"), null);
+    private final User secontUser = new User(1, "email@gmail.com", "Login2", "Name2", LocalDate.parse("1980-01-01"), null);
+    private final User thirdUser = new User(3, "email@gmail.com", "Login3", "Name3", LocalDate.parse("1990-01-01"), null);
     private int film1Id, film2Id, film3Id;
     private int user1Id, user2Id, user3Id;
 
     @BeforeEach
     void createFilmData() {
-        Film film1 = new Film(null, "Film1", "Description1", LocalDate.parse("1970-01-01"),
-                140, new Mpa(1, "G"), 0);
         filmStorage.addFilm(film1);
         film1Id = film1.getId();
-
-        Film film2 = new Film(null, "Film2", "Description2", LocalDate.parse("1980-01-01"),
-                90, new Mpa(2, "PG"), 0);
         filmStorage.addFilm(film2);
         film2Id = film2.getId();
-
-        Film film3 = new Film(null, "Film3", "Description3", LocalDate.parse("1990-01-01"),
-                190, new Mpa(2, "PG"), 0);
         filmStorage.addFilm(film3);
         film3Id = film3.getId();
 
-        User firstUser = new User(1, "email@yandex.ru", "Login1", "Name1", LocalDate.parse("1970-01-01"), null);
         userDbStorage.addUser(firstUser);
         user1Id = firstUser.getId();
-        User secontUser = new User(1, "email@gmail.com", "Login2", "Name2", LocalDate.parse("1980-01-01"), null);
         userDbStorage.addUser(secontUser);
         user2Id = secontUser.getId();
-        User thirdUser = new User(3, "email@gmail.com", "Login3", "Name3", LocalDate.parse("1990-01-01"), null);
         userDbStorage.addUser(thirdUser);
         user3Id = thirdUser.getId();
     }
@@ -101,7 +99,22 @@ public class FilmDbStorageTest {
 
         /*Проверяем порядок элементов в списке.*/
         /*Первым должен быть фильм с id=2 т.к. у него три лайка*/
-        Assertions.assertEquals(2, current.get(0).getId(),"Первым д.б. фильм с id=2 т.к. у него три лайка.");
-        Assertions.assertEquals(1, current.get(1).getId(),"Первым д.б. фильм с id=1 т.к. у него два лайка.");
+        Assertions.assertEquals(2, current.get(0).getId(), "Первым д.б. фильм с id=2 т.к. у него три лайка.");
+        Assertions.assertEquals(1, current.get(1).getId(), "Вторым д.б. фильм с id=1 т.к. у него два лайка.");
     }
+
+    @Test
+    @DisplayName("Проверка метода deleteFilm")
+    void testDeleteFilm() {
+        filmStorage.deleteFilm(2);
+
+        List<Film> current = filmStorage.findAll();
+        Assertions.assertEquals(2, current.size(), "Количество film не совпадает.");
+
+        Film[] expect = new Film[]{film1, film3};
+        Assertions.assertArrayEquals(expect, current.toArray(),"Удален не тот film.");
+    }
+
 }
+
+

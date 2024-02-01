@@ -56,16 +56,10 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User deleteUser(User user) {
-        if (user == null) {
-            throw new UnregisteredDataException("При удалении пользователя был передан null");
-        }
-        log.info("ХРАНИЛИЩЕ: Удаление пользователя с id {}", user.getId());
-        if (findById(user.getId()) != null) {
-            String sqlQuery = "DELETE FROM USERS WHERE USER_ID = ?";
-            jdbcTemplate.update(sqlQuery, user.getId());
-        }
-        return user;
+    public boolean deleteUser(int userId) {
+        log.info("ХРАНИЛИЩЕ: Удаление пользователя с id {}", userId);
+        String sqlQuery = "DELETE FROM USERS WHERE USER_ID = ?";
+        return jdbcTemplate.update(sqlQuery, userId) > 0;
     }
 
     @Override
