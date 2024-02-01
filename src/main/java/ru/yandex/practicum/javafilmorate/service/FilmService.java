@@ -65,5 +65,11 @@ public class FilmService {
         return filmStorage.commonFilms(userId, friendId);
     }
 
+    public List<Film> findDirectorFilmsByYearOrLikes(int directorId, String sortBy) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка фильмов режиссера с id {}, " +
+                "отсортированных по {}", directorId, sortBy);
+        return filmStorage.findDirectorFilmsByYearOrLikes(directorId, sortBy);
+    }
+
 
 }

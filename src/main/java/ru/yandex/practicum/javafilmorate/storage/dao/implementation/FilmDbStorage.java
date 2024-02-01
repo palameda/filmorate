@@ -7,8 +7,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.javafilmorate.model.Director;
 import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.model.Genre;
+import ru.yandex.practicum.javafilmorate.storage.dao.DirectorStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.FilmStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.GenreStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.MpaStorage;
@@ -25,6 +27,7 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
+    private final DirectorStorage directorStorage;
 
     @Override
     public List<Film> findAll() {
@@ -46,6 +49,7 @@ public class FilmDbStorage implements FilmStorage {
                 .usingGeneratedKeyColumns("FILM_ID");
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.filmToMap()).intValue());
         genreStorage.addFilmGenre(film);
+        directorStorage.addFilmDirectors(film);
         return findById(film.getId());
     }
 
@@ -66,6 +70,8 @@ public class FilmDbStorage implements FilmStorage {
             deleteFilmGenres(film.getId());
             fillFilmGenres(film);
             film.setGenres(getFilmGenres(film.getId()));
+            directorStorage.deleteFilmDirectors(film);
+            directorStorage.addFilmDirectors(film);
             return film;
         } else {
             throw new UnregisteredDataException("Фильм с id " + film.getId() + " не зарегистрирован в системе");
@@ -106,6 +112,32 @@ public class FilmDbStorage implements FilmStorage {
         return films;
     }
 
+    @Override
+    public List<Film> findDirectorFilmsByYearOrLikes(int directorId, String sortBy) {
+        directorStorage.findById(directorId); // проверка директора на существование
+        String sql;
+        List<Film> films = new ArrayList<>();
+        if (sortBy.equals("year")) {
+            sql = "SELECT F.* FROM FILMS AS F " +
+                    "JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
+                    "WHERE FD.DIRECTOR_ID = " + directorId +
+                    " ORDER BY F.FILM_RELEASE_DATE";
+        } else if (sortBy.equals("likes")) {
+            sql = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                    "JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
+                    "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                    "WHERE FD.DIRECTOR_ID = " + directorId +
+                    " GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC";
+        } else {
+            throw new UnregisteredDataException("Сортировка по запрошенному параметру не реализована");
+        }
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+        return films;
+    }
+
     private Film filmRowMap(SqlRowSet rs) {
         log.info("ХРАНИЛИЩЕ: Производится маппинг фильма");
         Film film = new Film(
@@ -117,6 +149,7 @@ public class FilmDbStorage implements FilmStorage {
                 mpaStorage.findById(rs.getInt("MPA_ID")),
                 getFilmLikes(rs.getInt("FILM_ID")));
         film.setGenres(getFilmGenres(film.getId()));
+        film.setDirectors(directorStorage.findDirectorsByFilmId(film.getId()));
         return film;
     }
 

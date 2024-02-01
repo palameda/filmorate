@@ -15,6 +15,7 @@ import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -81,7 +82,16 @@ public class DirectorDbStorage implements DirectorStorage {
 
     @Override
     public Set<Director> findDirectorsByFilmId(Integer filmId) {
-        return null;
+        log.info("ХРАНИЛИЩЕ: Поиск режиссёров для фильма с id {}", filmId);
+        Set<Director> directors = new HashSet<>();
+        String sqlQuery = "SELECT D.* FROM FILMS_DIRECTORS AS FD " +
+                "JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.DIRECTOR_ID " +
+                "WHERE FD.FILM_ID = ?";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, filmId);
+        while (rs.next()) {
+            directors.add(directorRowMap(rs));
+        }
+        return directors;
     }
 
     @Override
