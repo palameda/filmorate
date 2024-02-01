@@ -23,7 +23,29 @@ public class FilmController {
         return filmService.findById(id);
     }
 
-    @GetMapping("/popular")
+    @GetMapping(value = "/popular", params = "genreId")
+    public List<Film> getPopularByGenre(@RequestParam(value = "count", defaultValue = "10") Integer count,
+                                        @RequestParam Integer genreId) {
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/popular params = {count, genreId}");
+        return filmService.getPopularByGenre(count, genreId);
+    }
+
+    @GetMapping(value = "/popular", params = "year")
+    public List<Film> getPopularByYear(@RequestParam(defaultValue = "10") Integer count,
+                                       @RequestParam Integer year) {
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/popular params = {count, year}");
+        return filmService.getPopularByYear(count, year);
+    }
+
+    @GetMapping(value = "/popular", params = {"genreId", "year"})
+    public List<Film> getPopularByGenreAndYear(@RequestParam(defaultValue = "10") Integer count,
+                                               @RequestParam Integer genreId,
+                                               @RequestParam Integer year) {
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/popular params = {count, genreId, year}");
+        return filmService.getPopularByGenreAndYear(count, genreId, year);
+    }
+
+    @GetMapping(value = "/popular")
     public List<Film> getPopularFilms(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
         log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/popular");
         return filmService.getPopularFilms(count);
