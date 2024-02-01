@@ -3,6 +3,7 @@ package ru.yandex.practicum.javafilmorate.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.service.UserService;
 
@@ -71,4 +72,10 @@ public class UserController {
     }
 
 
+
+    @GetMapping("/{userId}/recommendations")
+    public List<Film> findRecomendationsForUser(@PathVariable("userId") Integer userId) {
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /{}/recommendations", userId);
+        return userService.findRecommendationsForUser(userId);
+    }
 }

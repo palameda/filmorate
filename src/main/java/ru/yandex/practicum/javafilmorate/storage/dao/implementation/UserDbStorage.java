@@ -10,7 +10,7 @@ import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -97,5 +97,15 @@ public class UserDbStorage implements UserStorage {
                 rs.getDate("USER_BIRTHDAY").toLocalDate(),
                 null)
         );
+    }
+
+    @Override
+    public Map<Integer, Set<Integer>> getAllLikes() {
+        log.info("ХРАНИЛИЩЕ: Получение карты всех лайков");
+        List<Map<String, Object>> likesDatabaseResult = jdbcTemplate.queryForList("SELECT * from likes");
+        Map<Integer, Set<Integer>> likes = new HashMap<>();
+        for (Map<String, Object> map : likesDatabaseResult)
+            likes.computeIfAbsent((Integer) map.get("film_id"), k -> new HashSet<>()).add((Integer) map.get("user_id"));
+        return likes;
     }
 }

@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.javafilmorate.model.User;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public interface UserStorage {
@@ -16,4 +18,6 @@ public interface UserStorage {
     User findById(Integer userId);
 
     List<User> findAll();
+
+    Map<Integer, Set<Integer>> getAllLikes();
 }
