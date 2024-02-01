@@ -8,6 +8,7 @@ import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.storage.dao.FilmStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.FriendStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
+import ru.yandex.practicum.javafilmorate.utils.CheckUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,11 @@ public class UserService {
     public User findById(Integer userId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на получение пользователя по id {}", userId);
         return userStorage.findById(userId);
+    }
+
+    public void deleteUser(int userId) {
+        log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление у пользователя с id {}.", userId);
+        CheckUtil.checkNotFound(userStorage.deleteUser(userId), " пользователь с id=" + userId);
     }
 
     public List<Film> findRecommendationsForUser(Integer userId) {

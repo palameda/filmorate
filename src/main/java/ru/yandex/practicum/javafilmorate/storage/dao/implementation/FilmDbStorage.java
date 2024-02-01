@@ -73,15 +73,10 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(int filmId) {
+    public boolean deleteFilm(int filmId) {
         log.info("ХРАНИЛИЩЕ: Удаление из хранилища фильма с id {}", filmId);
-        if (filmId == 0) {
-            throw new UnregisteredDataException("Фильм с id " + filmId + " не зарегистрирован в системе");
-        }
         String sqlQuery = "DELETE FROM FILMS WHERE FILM_ID = ? ";
-        if (jdbcTemplate.update(sqlQuery, filmId) == 0) {
-            throw new UnregisteredDataException("Фильм с id " + filmId + " не зарегистрирован в системе");
-        }
+        return jdbcTemplate.update(sqlQuery, filmId) > 0;
     }
 
     @Override
@@ -196,4 +191,37 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
     }
+
+    @Override
+    public List<Film> commonFilms(int userId, int friendId) {
+        log.info("ХРАНИЛИЩЕ: Получение списка общих фильмов пользователя id={} " +
+                " и его друга id={} отсортированных по популярности.", userId, friendId);
+
+        String sqlQuery = "SELECT t.*        \n" +
+                "            FROM (SELECT f.*, \n" +
+                "                         count(f.film_id) likes\n" +
+                "                    FROM Films f\n" +
+                "                   INNER JOIN LIKES l ON l.film_id = f.film_id  \n" +
+                "                   GROUP BY (f.film_id)) t\n" +
+                "           INNER JOIN LIKES l2 ON l2.film_id = t.film_id AND l2.user_id=?\n" +
+                "          INTERSECT\n" +
+                "          SELECT t.*        \n" +
+                "            FROM (SELECT f.*, \n" +
+                "                         count(f.film_id) likes\n" +
+                "                    FROM Films f\n" +
+                "                   INNER JOIN LIKES l ON l.film_id = f.film_id  \n" +
+                "                   GROUP BY (f.film_id)) t\n" +
+                "           INNER JOIN LIKES l2 ON l2.film_id = t.film_id AND l2.user_id=? \n" +
+                "          ORDER BY likes DESC; ";
+
+        List<Film> films = new ArrayList<>();
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, userId, friendId);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+
+        return films;
+    }
+
+
 }
