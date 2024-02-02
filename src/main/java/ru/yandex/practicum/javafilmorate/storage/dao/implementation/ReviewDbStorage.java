@@ -58,7 +58,6 @@ public class ReviewDbStorage implements ReviewStorage {
         jdbcTemplate.update("UPDATE reviews SET CONTENT = ?,  IS_POSITIVE = ? WHERE ID = ?",
                 review.getContent(), review.getIsPositive(), review.getReviewId());
         eventService.add(new Event(EventType.REVIEW, OperationType.UPDATE, review.getReviewId(), updateReview.getUserId()));
-//        eventService.add(new Event(EventType.REVIEW, OperationType.UPDATE, review.getReviewId(), review.getUserId()));
         return findReviewByID(review.getReviewId());
     }
 
