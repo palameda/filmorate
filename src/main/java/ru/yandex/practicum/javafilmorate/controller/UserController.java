@@ -74,6 +74,7 @@ public class UserController {
         userService.deleteUser(userId);
     }
 
+
     @GetMapping("/{userId}/recommendations")
     public List<Film> findRecomendationsForUser(@PathVariable("userId") Integer userId) {
         log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /{}/recommendations", userId);

@@ -37,7 +37,8 @@ public class ReviewDbStorageTest {
         reviewStorage = new ReviewDbStorage(jdbcTemplate, eventService);
         GenreDbStorage genreStorage = new GenreDbStorage(jdbcTemplate);
         MpaDbStorage mpaDbStorage = new MpaDbStorage(jdbcTemplate);
-        FilmDbStorage filmStorage = new FilmDbStorage(jdbcTemplate, mpaDbStorage, genreStorage);
+        DirectorDbStorage directorDbStorage = new DirectorDbStorage(jdbcTemplate);
+        FilmDbStorage filmStorage = new FilmDbStorage(jdbcTemplate, mpaDbStorage, genreStorage, directorDbStorage);
         UserDbStorage userDbStorage = new UserDbStorage(jdbcTemplate);
         Film film1 = new Film(null, "Film1", "Description1", LocalDate.parse("1970-01-01"),
                 140, new Mpa(1, "G"), 0);

@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.model.Genre;
+import ru.yandex.practicum.javafilmorate.storage.dao.DirectorStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.FilmStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.GenreStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.MpaStorage;
@@ -25,6 +26,7 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
+    private final DirectorStorage directorStorage;
 
     @Override
     public List<Film> findAll() {
@@ -46,6 +48,7 @@ public class FilmDbStorage implements FilmStorage {
                 .usingGeneratedKeyColumns("FILM_ID");
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.filmToMap()).intValue());
         genreStorage.addFilmGenre(film);
+        directorStorage.addFilmDirectors(film);
         return findById(film.getId());
     }
 
@@ -66,6 +69,8 @@ public class FilmDbStorage implements FilmStorage {
             deleteFilmGenres(film.getId());
             fillFilmGenres(film);
             film.setGenres(getFilmGenres(film.getId()));
+            directorStorage.deleteFilmDirectors(film);
+            directorStorage.addFilmDirectors(film);
             return film;
         } else {
             throw new UnregisteredDataException("Фильм с id " + film.getId() + " не зарегистрирован в системе");
@@ -106,6 +111,118 @@ public class FilmDbStorage implements FilmStorage {
         return films;
     }
 
+    @Override
+    public List<Film> getPopularByGenre(int count, int genreId) {
+        List<Film> films = new ArrayList<>();
+        String sqlQuery = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                "LEFT JOIN FILM_GENRES AS FG ON F.FILM_ID = FG.FILM_ID " +
+                "WHERE FG.GENRE_ID = ? " +
+                "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC LIMIT ?";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, genreId, count);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+        log.info("ХРАНИЛИЩЕ: Получение списка {} самых популярных фильмов с id жанра {}", count, genreId);
+        return films;
+    }
+
+    @Override
+    public List<Film> getPopularByYear(int count, int year) {
+        List<Film> films = new ArrayList<>();
+        String sqlQuery = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                "WHERE YEAR(F.FILM_RELEASE_DATE) = ? " +
+                "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC LIMIT ?";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, year, count);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+        log.info("ХРАНИЛИЩЕ: Получение списка {} самых популярных фильмов с годом релиза {}", count, year);
+        return films;
+    }
+
+    @Override
+    public List<Film> getPopularByGenreAndYear(int count, int genreId, int year) {
+        List<Film> films = new ArrayList<>();
+        String sqlQuery = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                "LEFT JOIN FILM_GENRES AS FG ON F.FILM_ID = FG.FILM_ID " +
+                "WHERE FG.GENRE_ID = ? AND YEAR(F.FILM_RELEASE_DATE) = ? " +
+                "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC LIMIT ?";
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlQuery, genreId, year, count);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+        log.info("ХРАНИЛИЩЕ: Получение списка {} самых популярных фильмов с id жанра {} и годом релиза {}", count,
+                genreId, year);
+        return films;
+    }
+
+    @Override
+    public List<Film> searchBySubstring(String query, String by) {
+        List<Film> films = new ArrayList<>();
+        String sql;
+        if (by.equalsIgnoreCase("director")) {
+            log.info("ХРАНИЛИЩЕ: Получение фильмов с именем режиссера, содержащим подстроку {}", query);
+            sql = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                    "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                    "LEFT JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
+                    "LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.DIRECTOR_ID " +
+                    "WHERE LOWER(D.DIRECTOR_NAME) LIKE '%" + query.toLowerCase() + "%'" +
+                    "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC, F.FILM_ID";
+        } else if (by.equalsIgnoreCase("title")) {
+            log.info("ХРАНИЛИЩЕ: Получение фильмов с названием, содержащим подстроку {}", query);
+            sql = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                    "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                    "WHERE LOWER(F.FILM_NAME) LIKE '%" + query.toLowerCase() + "%'" +
+                    "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC, F.FILM_ID";
+        } else if (by.equalsIgnoreCase("director,title") || by.equalsIgnoreCase("title,director")) {
+            log.info("ХРАНИЛИЩЕ: Получение фильмов с именем режиссера или названием, содержащим подстроку {}", query);
+            sql = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                    "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                    "LEFT JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
+                    "LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.DIRECTOR_ID " +
+                    "WHERE LOWER(D.DIRECTOR_NAME) LIKE '%" + query.toLowerCase() +
+                    "%' OR LOWER(F.FILM_NAME) LIKE '%" + query.toLowerCase() + "%' " +
+                    "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC, F.FILM_ID";
+        } else {
+            throw new UnregisteredDataException("Запрос поиска по параметру " + by + " не найден");
+        }
+
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+        return films;
+    }
+
+    @Override
+    public List<Film> findDirectorFilmsByYearOrLikes(int directorId, String sortBy) {
+        directorStorage.findById(directorId); // проверка директора на существование
+        String sql;
+        List<Film> films = new ArrayList<>();
+        if (sortBy.equalsIgnoreCase("year")) {
+            sql = "SELECT F.* FROM FILMS AS F " +
+                    "JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
+                    "WHERE FD.DIRECTOR_ID = " + directorId +
+                    " ORDER BY F.FILM_RELEASE_DATE";
+        } else if (sortBy.equalsIgnoreCase("likes")) {
+            sql = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                    "JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
+                    "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                    "WHERE FD.DIRECTOR_ID = " + directorId +
+                    " GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC";
+        } else {
+            throw new UnregisteredDataException("Сортировка по запрошенному параметру не реализована");
+        }
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+        return films;
+    }
+
     private Film filmRowMap(SqlRowSet rs) {
         log.info("ХРАНИЛИЩЕ: Производится маппинг фильма");
         Film film = new Film(
@@ -117,6 +234,7 @@ public class FilmDbStorage implements FilmStorage {
                 mpaStorage.findById(rs.getInt("MPA_ID")),
                 getFilmLikes(rs.getInt("FILM_ID")));
         film.setGenres(getFilmGenres(film.getId()));
+        film.setDirectors(directorStorage.findDirectorsByFilmId(film.getId()));
         return film;
     }
 
@@ -222,6 +340,4 @@ public class FilmDbStorage implements FilmStorage {
 
         return films;
     }
-
-
 }
