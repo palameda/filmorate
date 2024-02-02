@@ -31,22 +31,22 @@ class EventDbStorageTest {
     private final EventDbStorage eventDbStorage;
 
     private final User firstUser = new User(1, "email@yandex.ru", "Login1", "Name1", LocalDate.parse("1970-01-01"), null);
-    private final Event event_1 = new Event(EventType.REVIEW, OperationType.ADD, 111, 1);
-    private final Event event_2 = new Event(EventType.REVIEW, OperationType.REMOVE, 222, 1);
-    private final Event event_3 = new Event(EventType.REVIEW, OperationType.UPDATE, 333, 1);
+    private final Event event1 = new Event(EventType.REVIEW, OperationType.ADD, 111, 1);
+    private final Event event2 = new Event(EventType.REVIEW, OperationType.REMOVE, 222, 1);
+    private final Event event3 = new Event(EventType.REVIEW, OperationType.UPDATE, 333, 1);
 
     @BeforeEach
     void setUp() {
         userDbStorage.addUser(firstUser);
 
-        eventDbStorage.add(event_1);
-        eventDbStorage.add(event_2);
+        eventDbStorage.add(event1);
+        eventDbStorage.add(event2);
 
     }
 
     @Test
     void testAdd() {
-        Event event = eventDbStorage.add(event_3);
+        Event event = eventDbStorage.add(event3);
         System.out.println(event);
     }
 
