@@ -16,12 +16,10 @@ import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.storage.dao.implementation.EventDbStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.implementation.UserDbStorage;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @SpringBootTest(classes = JavaFilmorateApplication.class)
@@ -30,7 +28,6 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class EventDbStorageTest {
 
-    private final JdbcTemplate jdbcTemplate;
     private final UserDbStorage userDbStorage;
     private final EventDbStorage eventDbStorage;
 

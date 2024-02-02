@@ -68,8 +68,6 @@ public class ReviewDbStorage implements ReviewStorage {
         Review updateReview = findReviewByID(review.getReviewId());
         jdbcTemplate.update("UPDATE reviews SET USEFUL = ?  WHERE ID = ?",
                 review.getUseful(), review.getReviewId());
-//        eventService.add(new Event(EventType.REVIEW, OperationType.UPDATE, review.getReviewId(), updateReview.getUserId()));
-//        eventService.add(new Event(EventType.REVIEW, OperationType.UPDATE, review.getReviewId(), review.getUserId()));
     }
 
     @Override

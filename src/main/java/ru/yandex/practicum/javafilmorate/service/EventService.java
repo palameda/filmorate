@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.javafilmorate.model.Event;
 import ru.yandex.practicum.javafilmorate.model.EventType;
-import ru.yandex.practicum.javafilmorate.model.OperationType;
 import ru.yandex.practicum.javafilmorate.storage.dao.EventStorage;
 
-import java.time.Instant;
 import java.util.List;
 
 @Slf4j
@@ -27,9 +25,6 @@ public class EventService {
         return eventStorage.getUserEvents(userId);
     }
 
-    public void deleteEventByEntityIdAndType(int entityID, EventType type) {
-        eventStorage.deleteEvent(entityID, type);
-    }
 
 }
 

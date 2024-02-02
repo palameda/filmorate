@@ -10,12 +10,8 @@ import ru.yandex.practicum.javafilmorate.model.Event;
 import ru.yandex.practicum.javafilmorate.model.EventType;
 import ru.yandex.practicum.javafilmorate.model.OperationType;
 import ru.yandex.practicum.javafilmorate.storage.dao.EventStorage;
-import ru.yandex.practicum.javafilmorate.storage.dao.FriendStorage;
-import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 

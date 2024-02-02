@@ -3,17 +3,11 @@ package ru.yandex.practicum.javafilmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.javafilmorate.model.Event;
-import ru.yandex.practicum.javafilmorate.model.EventType;
-import ru.yandex.practicum.javafilmorate.model.OperationType;
 import ru.yandex.practicum.javafilmorate.model.Review;
-import ru.yandex.practicum.javafilmorate.storage.dao.EventStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.ReviewStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Slf4j

@@ -9,8 +9,6 @@ import ru.yandex.practicum.javafilmorate.storage.dao.FriendStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
 import ru.yandex.practicum.javafilmorate.utils.CheckUtil;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +21,6 @@ public class UserService {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final FriendStorage friendStorage;
-    private final EventService eventService;
 
     public User addUser(User user) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление пользователя с id {}", user.getId());

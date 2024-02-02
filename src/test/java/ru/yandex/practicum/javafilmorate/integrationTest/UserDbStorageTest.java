@@ -15,7 +15,6 @@ import ru.yandex.practicum.javafilmorate.model.Mpa;
 import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.service.EventService;
 import ru.yandex.practicum.javafilmorate.service.UserService;
-import ru.yandex.practicum.javafilmorate.storage.dao.EventStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.FriendStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.LikeStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.implementation.FilmDbStorage;

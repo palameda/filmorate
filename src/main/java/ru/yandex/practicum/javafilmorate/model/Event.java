@@ -2,9 +2,7 @@ package ru.yandex.practicum.javafilmorate.model;
 
 import lombok.*;
 
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
