@@ -5,6 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.javafilmorate.model.Event;
+import ru.yandex.practicum.javafilmorate.model.EventType;
+import ru.yandex.practicum.javafilmorate.model.OperationType;
+import ru.yandex.practicum.javafilmorate.service.EventService;
 import ru.yandex.practicum.javafilmorate.storage.dao.LikeStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
@@ -15,6 +19,7 @@ import java.util.List;
 @Component
 public class LikesDbStorage implements LikeStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final EventService eventService;
 
     @Override
     public void addLike(Integer filmId, Integer userId) {
@@ -23,6 +28,7 @@ public class LikesDbStorage implements LikeStorage {
         log.info("ХРАНИЛИЩЕ: Сохранение отметки\"like\" фильму с id {} от пользователя с id {}", filmId, userId);
         String sqlQuery = "INSERT INTO LIKES (FILM_ID, USER_ID) VALUES (?, ?)";
         jdbcTemplate.update(sqlQuery, filmId, userId);
+        eventService.add(new Event(EventType.LIKE, OperationType.ADD, filmId, userId));
     }
 
     @Override
@@ -32,6 +38,7 @@ public class LikesDbStorage implements LikeStorage {
         log.info("ХРАНИЛИЩЕ: Удаление отметки\"like\" у фильма с id {} от пользователя с id {}", filmId, userId);
         String sqlQuery = "DELETE FROM LIKES WHERE FILM_ID = ? AND USER_ID = ?";
         jdbcTemplate.update(sqlQuery, filmId, userId);
+        eventService.add(new Event(EventType.LIKE, OperationType.REMOVE, filmId, userId));
     }
 
     @Override

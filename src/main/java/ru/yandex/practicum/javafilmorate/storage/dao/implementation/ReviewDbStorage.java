@@ -6,7 +6,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.javafilmorate.model.Event;
+import ru.yandex.practicum.javafilmorate.model.EventType;
+import ru.yandex.practicum.javafilmorate.model.OperationType;
 import ru.yandex.practicum.javafilmorate.model.Review;
+import ru.yandex.practicum.javafilmorate.service.EventService;
 import ru.yandex.practicum.javafilmorate.storage.dao.ReviewStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
@@ -22,9 +26,11 @@ import java.util.stream.Collectors;
 @Component
 public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final EventService eventService;
 
-    public ReviewDbStorage(JdbcTemplate jdbcTemplate) {
+    public ReviewDbStorage(JdbcTemplate jdbcTemplate, EventService eventService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.eventService = eventService;
     }
 
     @Override
@@ -38,6 +44,7 @@ public class ReviewDbStorage implements ReviewStorage {
                 "USER_ID", review.getUserId(), "FILM_ID", review.getFilmId());
         try {
             review.setReviewId(simpleJdbcInsert.executeAndReturnKey(params).intValue());
+            eventService.add(new Event(EventType.REVIEW, OperationType.ADD, review.getReviewId(), review.getUserId()));
             return review;
         } catch (DataIntegrityViolationException e) {
             throw new UnregisteredDataException("Определен несуществующий пользователь или фильм");
@@ -47,16 +54,22 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Review update(Review review) {
         log.info("ХРАНИЛИЩЕ: Обновление данных по отзыву с id {}", review.getReviewId());
+        Review updateReview = findReviewByID(review.getReviewId());
         jdbcTemplate.update("UPDATE reviews SET CONTENT = ?,  IS_POSITIVE = ? WHERE ID = ?",
                 review.getContent(), review.getIsPositive(), review.getReviewId());
+        eventService.add(new Event(EventType.REVIEW, OperationType.UPDATE, review.getReviewId(), updateReview.getUserId()));
+//        eventService.add(new Event(EventType.REVIEW, OperationType.UPDATE, review.getReviewId(), review.getUserId()));
         return findReviewByID(review.getReviewId());
     }
 
     @Override
     public void updateUseful(Review review) {
         log.info("ХРАНИЛИЩЕ: Обновление данных о полезности отзыва с id {}", review.getReviewId());
+        Review updateReview = findReviewByID(review.getReviewId());
         jdbcTemplate.update("UPDATE reviews SET USEFUL = ?  WHERE ID = ?",
                 review.getUseful(), review.getReviewId());
+//        eventService.add(new Event(EventType.REVIEW, OperationType.UPDATE, review.getReviewId(), updateReview.getUserId()));
+//        eventService.add(new Event(EventType.REVIEW, OperationType.UPDATE, review.getReviewId(), review.getUserId()));
     }
 
     @Override
@@ -88,6 +101,7 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public void removeReview(int reviewID) {
         log.info("ХРАНИЛИЩЕ: Удаление из хранилища отзыва с id {}", reviewID);
+        eventService.add(new Event(EventType.REVIEW, OperationType.REMOVE, reviewID, findReviewByID(reviewID).getUserId()));
         jdbcTemplate.update("DELETE FROM reviews WHERE ID = ?", reviewID);
     }
 

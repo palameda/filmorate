@@ -3,7 +3,10 @@ package ru.yandex.practicum.javafilmorate.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.javafilmorate.model.Event;
+import ru.yandex.practicum.javafilmorate.model.EventType;
 import ru.yandex.practicum.javafilmorate.model.Film;
+import ru.yandex.practicum.javafilmorate.model.OperationType;
 import ru.yandex.practicum.javafilmorate.storage.dao.FilmStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.LikeStorage;
 import ru.yandex.practicum.javafilmorate.utils.CheckUtil;
@@ -39,13 +42,13 @@ public class FilmService {
 
     public void addLike(Integer filmId, Integer userId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление отметки \"like\" " +
-                        "фильму с id {} от пользователя с id {} ", filmId, userId);
+                "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.addLike(filmId, userId);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление отметки \"like\" " +
-                        "фильму с id {} от пользователя с id {} ", filmId, userId);
+                "фильму с id {} от пользователя с id {} ", filmId, userId);
         likeStorage.deleteLike(filmId, userId);
     }
 

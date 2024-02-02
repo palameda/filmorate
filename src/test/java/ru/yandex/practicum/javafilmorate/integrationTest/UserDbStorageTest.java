@@ -13,7 +13,9 @@ import ru.yandex.practicum.javafilmorate.JavaFilmorateApplication;
 import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.model.Mpa;
 import ru.yandex.practicum.javafilmorate.model.User;
+import ru.yandex.practicum.javafilmorate.service.EventService;
 import ru.yandex.practicum.javafilmorate.service.UserService;
+import ru.yandex.practicum.javafilmorate.storage.dao.EventStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.FriendStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.LikeStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.implementation.FilmDbStorage;
@@ -33,11 +35,13 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 class UserDbStorageTest {
     private final FilmDbStorage filmDbStorage;
     private final UserDbStorage userDbStorage;
+    private final FriendStorage friendStorage;
+    private final LikeStorage likeStorage;
+    private final EventService eventService;
     private final User firstUser = new User(1, "email@yandex.ru", "Login1", "Name1", LocalDate.parse("1970-01-01"), null);
     private final User secontUser = new User(1, "email@gmail.com", "Login2", "Name2", LocalDate.parse("1980-01-01"), null);
     private final User thirdUser = new User(3, "email@gmail.com", "Login3", "Name3", LocalDate.parse("1990-01-01"), null);
-    private final FriendStorage friendStorage;
-    private final LikeStorage likeStorage;
+
 
     @BeforeEach
     void createUserData() {
@@ -87,7 +91,7 @@ class UserDbStorageTest {
     @Test
     @DisplayName("Проверка метода findSimilarUserId в UserService")
     void findRecommendationsForUserTest() {
-        UserService userService = new UserService(userDbStorage, filmDbStorage, friendStorage);
+        UserService userService = new UserService(userDbStorage, filmDbStorage, friendStorage, eventService);
 
         Film film1 = new Film(null, "Film1", "Description1", LocalDate.parse("1970-01-01"),
                 140, new Mpa(1, "G"), 0);

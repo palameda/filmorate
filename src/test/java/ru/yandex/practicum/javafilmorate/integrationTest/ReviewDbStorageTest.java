@@ -11,6 +11,7 @@ import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.model.Mpa;
 import ru.yandex.practicum.javafilmorate.model.Review;
 import ru.yandex.practicum.javafilmorate.model.User;
+import ru.yandex.practicum.javafilmorate.service.EventService;
 import ru.yandex.practicum.javafilmorate.storage.dao.ReviewStorage;
 import ru.yandex.practicum.javafilmorate.storage.dao.implementation.*;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
@@ -26,12 +27,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ReviewDbStorageTest {
     private final JdbcTemplate jdbcTemplate;
     private ReviewStorage reviewStorage;
+
+    private EventService eventService;
     private int film1Id, film2Id;
     private int user1Id, user2Id, user3Id;
 
     @BeforeEach
     void beforeEach() {
-        reviewStorage = new ReviewDbStorage(jdbcTemplate);
+        reviewStorage = new ReviewDbStorage(jdbcTemplate, eventService);
         GenreDbStorage genreStorage = new GenreDbStorage(jdbcTemplate);
         MpaDbStorage mpaDbStorage = new MpaDbStorage(jdbcTemplate);
         FilmDbStorage filmStorage = new FilmDbStorage(jdbcTemplate, mpaDbStorage, genreStorage);
