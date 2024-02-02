@@ -72,7 +72,6 @@ public class UserController {
     }
 
 
-
     @GetMapping("/{userId}/recommendations")
     public List<Film> findRecomendationsForUser(@PathVariable("userId") Integer userId) {
         log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /{}/recommendations", userId);
