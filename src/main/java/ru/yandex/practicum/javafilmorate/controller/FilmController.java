@@ -56,6 +56,7 @@ public class FilmController {
         log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/search");
         return filmService.searchBySubstring(query, by);
     }
+
     @GetMapping
     public List<Film> findAll() {
         log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films");
