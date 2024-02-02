@@ -9,8 +9,6 @@ public interface EventStorage {
 
     Event add(Event event);
 
-    boolean deleteEvent(int entityID, EventType type);
-
     List<Event> getUserEvents(int userId);
 
 

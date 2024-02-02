@@ -17,7 +17,7 @@ public class ReviewService {
     private final ReviewStorage reviewStorage;
 
 
-    public ReviewService(ReviewStorage reviewStorage, EventService eventService) {
+    public ReviewService(ReviewStorage reviewStorage) {
         this.reviewStorage = reviewStorage;
 
     }
