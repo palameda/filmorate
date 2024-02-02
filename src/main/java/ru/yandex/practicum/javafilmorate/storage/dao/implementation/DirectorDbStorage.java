@@ -125,8 +125,8 @@ public class DirectorDbStorage implements DirectorStorage {
     public Director directorRowMap(SqlRowSet rs) {
         log.info("ХРАНИЛИЩЕ: Производится маппинг режиссёра");
         return new Director(
-             rs.getInt("DIRECTOR_ID"),
-             rs.getString("DIRECTOR_NAME")
+                rs.getInt("DIRECTOR_ID"),
+                rs.getString("DIRECTOR_NAME")
         );
     }
 }

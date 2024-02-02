@@ -63,7 +63,7 @@ public class EventDbStorage implements EventStorage {
     public boolean deleteEvent(int entityID, EventType type) {
         log.info("ХРАНИЛИЩЕ: Удаление из хранилища события с сущностью id {} и типом {}", entityID, type);
         String sqlQuery = "DELETE FROM Events WHERE ENTITY_ID=? AND EVENT_TYPE =?";
-        return jdbcTemplate.update(sqlQuery, entityID, type.toString() ) > 0;
+        return jdbcTemplate.update(sqlQuery, entityID, type.toString()) > 0;
     }
 
     private void isRegistered(int userId) {

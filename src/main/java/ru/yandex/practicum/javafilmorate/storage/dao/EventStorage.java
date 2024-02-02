@@ -11,5 +11,4 @@ public interface EventStorage {
     List<Event> getUserEvents(int userId);
 
 
-
 }
