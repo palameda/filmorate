@@ -28,4 +28,6 @@ public interface FilmStorage {
     List<Film> getPopularByYear(int count, int year);
 
     List<Film> getPopularByGenreAndYear(int count, int genreId, int year);
+
+    List<Film> searchBySubstring(String query, String by);
 }

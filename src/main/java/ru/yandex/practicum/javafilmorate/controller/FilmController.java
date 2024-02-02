@@ -51,6 +51,11 @@ public class FilmController {
         return filmService.getPopularFilms(count);
     }
 
+    @GetMapping("/search")
+    public List<Film> searchBySubstring(@RequestParam String query, @RequestParam String by) {
+        log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/search");
+        return filmService.searchBySubstring(query, by);
+    }
     @GetMapping
     public List<Film> findAll() {
         log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films");
@@ -99,6 +104,4 @@ public class FilmController {
         log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /films/common?userId={}&friendId={}", userId, friendId);
         return filmService.commonFilms(userId, friendId);
     }
-
-
 }

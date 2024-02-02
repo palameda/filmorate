@@ -255,4 +255,45 @@ public class FilmDbStorageTest {
                 filmStorage.getPopularByGenreAndYear(10, 2, 1990),
                 "в списке должны быть фильмы film5 и film4");
     }
+
+    @Test
+    @DisplayName("Проверка метода searchBySubstring")
+    void testSearchBySubstring() {
+        Director director2 = new Director(2, "FiLmDiReCtOr");
+        directorStorage.addDirector(director);
+        directorStorage.addDirector(director2);
+
+        Film film34 = new Film(null, "gOlm34", "Description4", LocalDate.parse("1990-10-01"),
+                140, new Mpa(1, "G"), 0);
+        film34.getDirectors().add(director2);
+        filmStorage.addFilm(film34);
+        int film34Id = film34.getId();
+        //для каждого фильма указан режиссёр
+        film1.getDirectors().add(director);
+        filmStorage.updateFilm(film1);
+        film2.getDirectors().add(director);
+        filmStorage.updateFilm(film2);
+        film3.getDirectors().add(director2);
+        filmStorage.updateFilm(film3);
+        // Добавляем лайки, так как фильмы сортируются по популярности
+        likesDbStorage.addLike(film2Id, user1Id);
+        likesDbStorage.addLike(film2Id, user2Id);
+        likesDbStorage.addLike(film3Id, user1Id);
+        likesDbStorage.addLike(film3Id, user2Id);
+        likesDbStorage.addLike(film3Id, user3Id);
+
+        Assertions.assertEquals(List.of(filmStorage.findById(film1Id)),
+                filmStorage.searchBySubstring("lm1", "title"), "Должен выдавать только film1");
+        Assertions.assertEquals(List.of(filmStorage.findById(film3Id), filmStorage.findById(film34Id)),
+                filmStorage.searchBySubstring("lm3", "title"), "Должен выдавать film3, film34");
+        Assertions.assertEquals(List.of(filmStorage.findById(film2Id), filmStorage.findById(film1Id)),
+                filmStorage.searchBySubstring("torn", "director"), "Должен выдавать film2, film1");
+        Assertions.assertEquals(List.of(filmStorage.findById(film3Id), filmStorage.findById(film2Id),
+                filmStorage.findById(1), filmStorage.findById(film34Id)),
+                filmStorage.searchBySubstring("ilm", "title,director"), "Должен выдать фильма 3, 2, 1, 4");
+        Assertions.assertEquals(List.of(filmStorage.findById(film3Id), filmStorage.findById(film2Id),
+                        filmStorage.findById(1), filmStorage.findById(film34Id)),
+                filmStorage.searchBySubstring("ilm", "director,title"), "Порядок параметров в by не" +
+                        "имеет значения");
+    }
 }

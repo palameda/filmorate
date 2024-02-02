@@ -160,6 +160,44 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> searchBySubstring(String query, String by) {
+        List<Film> films = new ArrayList<>();
+        String sql;
+        if (by.equalsIgnoreCase("director")) {
+            log.info("ХРАНИЛИЩЕ: Получение фильмов с именем режиссера, содержащим подстроку {}", query);
+            sql = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                    "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                    "LEFT JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
+                    "LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.DIRECTOR_ID " +
+                    "WHERE LOWER(D.DIRECTOR_NAME) LIKE '%" + query.toLowerCase() + "%'" +
+                    "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC, F.FILM_ID";
+        } else if (by.equalsIgnoreCase("title")) {
+            log.info("ХРАНИЛИЩЕ: Получение фильмов с названием, содержащим подстроку {}", query);
+            sql = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                    "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                    "WHERE LOWER(F.FILM_NAME) LIKE '%" + query.toLowerCase() + "%'" +
+                    "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC, F.FILM_ID";
+        } else if (by.equalsIgnoreCase("director,title") || by.equalsIgnoreCase("title,director")) {
+            log.info("ХРАНИЛИЩЕ: Получение фильмов с именем режиссера или названием, содержащим подстроку {}", query);
+            sql = "SELECT F.*, COUNT(L.USER_ID) FROM FILMS AS F " +
+                    "LEFT JOIN LIKES AS L ON F.FILM_ID = L.FILM_ID " +
+                    "LEFT JOIN FILMS_DIRECTORS AS FD ON F.FILM_ID = FD.FILM_ID " +
+                    "LEFT JOIN DIRECTORS AS D ON FD.DIRECTOR_ID = D.DIRECTOR_ID " +
+                    "WHERE LOWER(D.DIRECTOR_NAME) LIKE '%" + query.toLowerCase() +
+                    "%' OR LOWER(F.FILM_NAME) LIKE '%" + query.toLowerCase() + "%' " +
+                    "GROUP BY F.FILM_ID ORDER BY COUNT(L.USER_ID) DESC, F.FILM_ID";
+        } else {
+            throw new UnregisteredDataException("Запрос поиска по параметру " + by + " не найден");
+        }
+
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
+        while (rs.next()) {
+            films.add(filmRowMap(rs));
+        }
+        return films;
+    }
+
+    @Override
     public List<Film> findDirectorFilmsByYearOrLikes(int directorId, String sortBy) {
         directorStorage.findById(directorId); // проверка директора на существование
         String sql;
@@ -302,6 +340,4 @@ public class FilmDbStorage implements FilmStorage {
 
         return films;
     }
-
-
 }
