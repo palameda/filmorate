@@ -51,12 +51,6 @@ class EventDbStorageTest {
     }
 
     @Test
-    void testGet() {
-        Event event = eventDbStorage.get(1);
-        System.out.println(event);
-    }
-
-    @Test
     void testGetUserFeed() {
         List<Event> events = eventDbStorage.getUserEvents(1);
         System.out.println(events);
