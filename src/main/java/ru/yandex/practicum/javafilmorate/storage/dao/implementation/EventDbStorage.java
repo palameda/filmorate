@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.javafilmorate.model.Event;
 import ru.yandex.practicum.javafilmorate.model.EventType;
 import ru.yandex.practicum.javafilmorate.model.OperationType;
 import ru.yandex.practicum.javafilmorate.storage.dao.EventStorage;
-import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,44 +35,20 @@ public class EventDbStorage implements EventStorage {
         return event;
     }
 
-    public Event get(int eventId) {
-        String sqlQuery = "SELECT * FROM Events e WHERE e.event_id=?";
-        return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> Event.builder()
-                .eventId(rs.getInt("EVENT_ID"))
-                .eventType(EventType.valueOf(rs.getString("EVENT_TYPE")))
-                .operation(OperationType.valueOf(rs.getString("OPERATION_TYPE")))
-                .entityId(rs.getInt("ENTITY_ID"))
-                .userId(rs.getInt("USER_ID"))
-                .timestamp(rs.getLong("EVENT_TIME"))
-                .build(), eventId);
-    }
-
     public List<Event> getUserEvents(int userId) {
-        isRegistered(userId);
         String sqlQuery = "SELECT * FROM Events e WHERE e.USER_ID=?";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> Event.builder()
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> eventRowMap(rs), userId);
+    }
+
+    private Event eventRowMap(ResultSet rs) throws SQLException {
+        return Event.builder()
                 .eventId(rs.getInt("EVENT_ID"))
                 .eventType(EventType.valueOf(rs.getString("EVENT_TYPE")))
                 .operation(OperationType.valueOf(rs.getString("OPERATION_TYPE")))
                 .entityId(rs.getInt("ENTITY_ID"))
                 .userId(rs.getInt("USER_ID"))
                 .timestamp(rs.getLong("EVENT_TIME"))
-                .build(), userId);
-    }
-
-    public boolean deleteEvent(int entityID, EventType type) {
-        log.info("ХРАНИЛИЩЕ: Удаление из хранилища события с сущностью id {} и типом {}", entityID, type);
-        String sqlQuery = "DELETE FROM Events WHERE ENTITY_ID=? AND EVENT_TYPE =?";
-        return jdbcTemplate.update(sqlQuery, entityID, type.toString()) > 0;
-    }
-
-    private void isRegistered(int userId) {
-        log.info("ХРАНИЛИЩЕ: Проверка регистрации пользователя в системе");
-        String sqlQuery = "SELECT * FROM USERS WHERE USER_ID = ?";
-        SqlRowSet userRow = jdbcTemplate.queryForRowSet(sqlQuery, userId);
-        if (!userRow.next()) {
-            throw new UnregisteredDataException("Пользователь с id " + userId + " не зарегистрирован в системе");
-        }
+                .build();
     }
 
 }

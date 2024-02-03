@@ -5,11 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.javafilmorate.model.Event;
-import ru.yandex.practicum.javafilmorate.model.EventType;
-import ru.yandex.practicum.javafilmorate.model.OperationType;
 import ru.yandex.practicum.javafilmorate.model.User;
-import ru.yandex.practicum.javafilmorate.service.EventService;
 import ru.yandex.practicum.javafilmorate.storage.dao.FriendStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
@@ -20,7 +16,6 @@ import java.util.List;
 @Component()
 public class FriendsDbStorage implements FriendStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final EventService eventService;
 
     @Override
     public void addFriend(int userId, int friendId) {
@@ -28,7 +23,6 @@ public class FriendsDbStorage implements FriendStorage {
         isRegistered(friendId);
         String sqlQuery = "INSERT INTO FRIENDS (USER_ID, FRIEND_ID) VALUES (?, ?)";
         jdbcTemplate.update(sqlQuery, userId, friendId);
-        eventService.add(new Event(EventType.FRIEND, OperationType.ADD, friendId, userId));
         log.info(" ХРАНИЛИЩЕ: Пользователь с id {} получил запрос дружбы от пользователя с id {}", userId, friendId);
     }
 
@@ -38,7 +32,6 @@ public class FriendsDbStorage implements FriendStorage {
         isRegistered(friendId);
         String sqlQuery = "DELETE FROM FRIENDS WHERE USER_ID = ? AND FRIEND_ID = ?";
         jdbcTemplate.update(sqlQuery, userId, friendId);
-        eventService.add(new Event(EventType.FRIEND, OperationType.REMOVE, friendId, userId));
         log.info("ХРАНИЛИЩЕ: Пользователь с id {} удалил из друзей пользователя с id {}", userId, friendId);
     }
 

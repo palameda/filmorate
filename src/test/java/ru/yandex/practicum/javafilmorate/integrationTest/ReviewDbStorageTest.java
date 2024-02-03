@@ -32,8 +32,7 @@ public class ReviewDbStorageTest {
 
     @BeforeEach
     void beforeEach() {
-        EventService eventService = new EventService(new EventDbStorage(jdbcTemplate));
-        reviewStorage = new ReviewDbStorage(jdbcTemplate, eventService);
+        reviewStorage = new ReviewDbStorage(jdbcTemplate);
         GenreDbStorage genreStorage = new GenreDbStorage(jdbcTemplate);
         MpaDbStorage mpaDbStorage = new MpaDbStorage(jdbcTemplate);
         DirectorDbStorage directorDbStorage = new DirectorDbStorage(jdbcTemplate);

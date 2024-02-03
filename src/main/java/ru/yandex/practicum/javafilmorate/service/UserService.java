@@ -21,6 +21,7 @@ public class UserService {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final FriendStorage friendStorage;
+    private final EventService eventService;
 
     public User addUser(User user) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление пользователя с id {}", user.getId());
@@ -41,12 +42,14 @@ public class UserService {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на добавление пользователю с id {} друга с id {}",
                 userId, friendId);
         friendStorage.addFriend(userId, friendId);
+        eventService.add(new Event(EventType.FRIEND, OperationType.ADD, friendId, userId));
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление у пользователя с id {} друга с id {}",
                 userId, friendId);
         friendStorage.deleteFriend(userId, friendId);
+        eventService.add(new Event(EventType.FRIEND, OperationType.REMOVE, friendId, userId));
     }
 
     public List<User> getUserFriends(Integer userId) {
