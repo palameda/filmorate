@@ -47,6 +47,9 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Review update(Review review) {
         log.info("ХРАНИЛИЩЕ: Обновление данных по отзыву с id {}", review.getReviewId());
+        Review updateReview = findReviewByID(review.getReviewId());
+        if (updateReview == null)
+            return null;
         jdbcTemplate.update("UPDATE reviews SET CONTENT = ?,  IS_POSITIVE = ? WHERE ID = ?",
                 review.getContent(), review.getIsPositive(), review.getReviewId());
         return findReviewByID(review.getReviewId());
@@ -55,6 +58,7 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public void updateUseful(Review review) {
         log.info("ХРАНИЛИЩЕ: Обновление данных о полезности отзыва с id {}", review.getReviewId());
+        findReviewByID(review.getReviewId());
         jdbcTemplate.update("UPDATE reviews SET USEFUL = ?  WHERE ID = ?",
                 review.getUseful(), review.getReviewId());
     }

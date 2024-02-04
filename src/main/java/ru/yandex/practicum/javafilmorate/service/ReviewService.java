@@ -3,20 +3,27 @@ package ru.yandex.practicum.javafilmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.javafilmorate.model.Event;
+import ru.yandex.practicum.javafilmorate.model.EventType;
+import ru.yandex.practicum.javafilmorate.model.OperationType;
 import ru.yandex.practicum.javafilmorate.model.Review;
 import ru.yandex.practicum.javafilmorate.storage.dao.ReviewStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
+
 
 import java.util.List;
 
 @Slf4j
 @Service
 public class ReviewService {
-    @Autowired
-    private final ReviewStorage reviewStorage;
 
-    public ReviewService(ReviewStorage reviewStorage) {
+    private final ReviewStorage reviewStorage;
+    private final EventService eventService;
+
+    @Autowired
+    public ReviewService(ReviewStorage reviewStorage, EventService eventService) {
         this.reviewStorage = reviewStorage;
+        this.eventService = eventService;
     }
 
     public Review add(Review review) {
@@ -25,12 +32,17 @@ public class ReviewService {
             throw new UnregisteredDataException("Идентификатор пользователя не может быть отрицательным");
         if (review.getFilmId() < 0)
             throw new UnregisteredDataException("Идентификатор фильма не может быть отрицательным");
-        return reviewStorage.add(review);
+        Review addReview = reviewStorage.add(review);
+        eventService.add(new Event(EventType.REVIEW, OperationType.ADD, review.getReviewId(), review.getUserId()));
+        return addReview;
     }
 
     public Review update(Review review) {
+        Review oldReview = findReviewByID(review.getReviewId());
         log.info("СЕРВИС: Отправлен запрос к хранилищу на обновление отзыва с id {}", review.getReviewId());
-        return reviewStorage.update(review);
+        Review newReview = reviewStorage.update(review);
+        eventService.add(new Event(EventType.REVIEW, OperationType.UPDATE, oldReview.getReviewId(), oldReview.getUserId()));
+        return newReview;
     }
 
     public List<Review> findReviewsByFilmID(int filmID, int count) {
@@ -48,7 +60,9 @@ public class ReviewService {
 
     public void removeReview(int reviewID) {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на удаление отзыва по id {}", reviewID);
+        int userId = reviewStorage.findReviewByID(reviewID).getUserId();
         reviewStorage.removeReview(reviewID);
+        eventService.add(new Event(EventType.REVIEW, OperationType.REMOVE, reviewID, userId));
     }
 
     public void addLike(int reviewID, int userID) {
