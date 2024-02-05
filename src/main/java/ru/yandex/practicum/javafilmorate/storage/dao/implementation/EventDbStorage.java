@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.javafilmorate.model.Event;
 import ru.yandex.practicum.javafilmorate.model.EventType;
 import ru.yandex.practicum.javafilmorate.model.OperationType;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Slf4j
 @AllArgsConstructor
-@Component()
+@Repository
 public class EventDbStorage implements EventStorage {
 
     private final JdbcTemplate jdbcTemplate;

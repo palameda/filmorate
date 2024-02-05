@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
@@ -13,7 +13,7 @@ import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 import java.util.*;
 
 @Slf4j
-@Component
+@Repository
 @AllArgsConstructor
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;

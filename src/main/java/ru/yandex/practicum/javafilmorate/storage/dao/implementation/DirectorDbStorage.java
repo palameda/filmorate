@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.javafilmorate.model.Director;
 import ru.yandex.practicum.javafilmorate.model.Film;
 import ru.yandex.practicum.javafilmorate.storage.dao.DirectorStorage;
@@ -21,9 +21,9 @@ import java.util.Set;
 
 @Slf4j
 @AllArgsConstructor
-@Component
+@Repository
 public class DirectorDbStorage implements DirectorStorage {
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Director> findAll() {

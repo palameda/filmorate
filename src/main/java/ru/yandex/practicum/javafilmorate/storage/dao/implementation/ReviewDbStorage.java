@@ -5,7 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.javafilmorate.model.Review;
 import ru.yandex.practicum.javafilmorate.storage.dao.ReviewStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+@Repository
 public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
 
