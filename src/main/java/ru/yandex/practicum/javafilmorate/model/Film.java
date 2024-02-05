@@ -4,6 +4,7 @@ import lombok.Data;
 import ru.yandex.practicum.javafilmorate.validation.ReleaseDateValidation;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ public class Film {
     private final String description;
     @ReleaseDateValidation(message = "Дата показа не может предшествовать 28 декабря 1895 года")
     private final LocalDate releaseDate;
+    @NotNull
     @Positive(message = "Продолжительнось фильма должна быть больше 0")
     private final Integer duration;
     private final Mpa mpa;
