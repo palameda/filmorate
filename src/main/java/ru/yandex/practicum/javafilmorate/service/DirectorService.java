@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class DirectorService {
 
-    DirectorStorage directorStorage;
+    private final DirectorStorage directorStorage;
 
     public List<Director> findAll() {
         log.info("СЕРВИС: Отправлен запрос к хранилищу на получение списка режиссёров");
