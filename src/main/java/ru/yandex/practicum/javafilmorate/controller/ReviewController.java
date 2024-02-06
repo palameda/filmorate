@@ -1,5 +1,6 @@
 package ru.yandex.practicum.javafilmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +13,9 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/reviews")
+@RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
-
-    @Autowired
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
 
     @PostMapping
     public Review add(@Valid @RequestBody Review review) {
@@ -45,8 +42,8 @@ public class ReviewController {
     }
 
     @GetMapping
-    List<Review> findAllReviews(@RequestParam(defaultValue = "0", required = false) Integer filmId,
-                                @RequestParam(defaultValue = "10", required = false) Integer count) {
+    List<Review> findAllReviews(@RequestParam(defaultValue = "0") Integer filmId,
+                                @RequestParam(defaultValue = "10") Integer count) {
         log.info("КОНТРОЛЛЕР: GET-запрос по эндпоинту /reviews");
         return reviewService.findReviewsByFilmID(filmId, count);
     }

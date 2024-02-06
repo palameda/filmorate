@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.javafilmorate.utils.InvalidDataException;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Map;
 
 @Slf4j
@@ -23,6 +24,13 @@ public class ErrorHandler {
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleInvalidDataException(final InvalidDataException exception) {
+        log.info("400 {}", exception.getMessage());
+        return Map.of("errorMessage", exception.getMessage());
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleConstraintViolationException(final ConstraintViolationException exception) {
         log.info("400 {}", exception.getMessage());
         return Map.of("errorMessage", exception.getMessage());
     }
