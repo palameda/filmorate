@@ -12,4 +12,5 @@ public interface FriendStorage {
     List<User> getUserFriends(Integer userId);
 
     List<User> getCommonsFriends(int userId, int friendId);
+
 }

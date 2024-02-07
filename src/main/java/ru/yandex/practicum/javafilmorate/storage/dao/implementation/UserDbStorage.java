@@ -5,15 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.javafilmorate.model.User;
 import ru.yandex.practicum.javafilmorate.storage.dao.UserStorage;
 import ru.yandex.practicum.javafilmorate.utils.UnregisteredDataException;
 
-import java.util.List;
+import java.util.*;
 
 @Slf4j
-@Component
+@Repository
 @AllArgsConstructor
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
@@ -56,16 +56,10 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User deleteUser(User user) {
-        if (user == null) {
-            throw new UnregisteredDataException("При удалении пользователя был передан null");
-        }
-        log.info("ХРАНИЛИЩЕ: Удаление пользователя с id {}", user.getId());
-        if (findById(user.getId()) != null) {
-            String sqlQuery = "DELETE FROM USERS WHERE USER_ID = ?";
-            jdbcTemplate.update(sqlQuery, user.getId());
-        }
-        return user;
+    public boolean deleteUser(int userId) {
+        log.info("ХРАНИЛИЩЕ: Удаление пользователя с id {}", userId);
+        String sqlQuery = "DELETE FROM USERS WHERE USER_ID = ?";
+        return jdbcTemplate.update(sqlQuery, userId) > 0;
     }
 
     @Override
@@ -103,5 +97,15 @@ public class UserDbStorage implements UserStorage {
                 rs.getDate("USER_BIRTHDAY").toLocalDate(),
                 null)
         );
+    }
+
+    @Override
+    public Map<Integer, Set<Integer>> getAllLikes() {
+        log.info("ХРАНИЛИЩЕ: Получение карты всех лайков");
+        List<Map<String, Object>> likesDatabaseResult = jdbcTemplate.queryForList("SELECT * from likes");
+        Map<Integer, Set<Integer>> likes = new HashMap<>();
+        for (Map<String, Object> map : likesDatabaseResult)
+            likes.computeIfAbsent((Integer) map.get("film_id"), k -> new HashSet<>()).add((Integer) map.get("user_id"));
+        return likes;
     }
 }

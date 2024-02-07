@@ -13,9 +13,21 @@ public interface FilmStorage {
 
     Film updateFilm(Film film);
 
-    void deleteFilm(int filmId);
+    boolean deleteFilm(int filmId);
 
     Film findById(int filmId);
 
     List<Film> getPopularFilms(int limit);
+
+    List<Film> commonFilms(int userId, int friendId);
+
+    List<Film> findDirectorFilmsByYearOrLikes(int directorId, String sortBy);
+
+    List<Film> getPopularByGenre(int count, int genreId);
+
+    List<Film> getPopularByYear(int count, int year);
+
+    List<Film> getPopularByGenreAndYear(int count, int genreId, int year);
+
+    List<Film> searchBySubstring(String query, String by);
 }
